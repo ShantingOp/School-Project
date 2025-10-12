@@ -29,11 +29,9 @@
   </script>
   <style>
     /* ---
-      HIMACHAL QUIZ CHALLENGE (v43.0 - The Final Version)
-      - Content libraries have been expanded and optimized for high replayability.
-      - Removed all buggy animations and replaced with new, fluid UI interactions.
-      - "About" section rewritten with a complete, professional project backstory.
-      - All known bugs (background scaling, theme loading) have been fixed.
+      HIMACHAL QUIZ CHALLENGE (v49.0 - Backstory & Bug Fix)
+      - Added new, detailed project backstory.
+      - Fixed scroll indicator bug inside pop-up modals.
       - Copyright (c) 2025 Saksham Negi
     --- */
 
@@ -200,7 +198,6 @@
     .secondary-btn { background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
     .danger-btn { background-color: var(--glow-incorrect); color: #fff; }
 
-    /* --- Welcome Screen Specific --- */
     #welcome-screen .container-header,
     #welcome-screen .container-main > *,
     #welcome-screen .container-footer > * {
@@ -210,8 +207,7 @@
     #welcome-screen .container-main > *:nth-child(2) { animation-delay: 0.2s; }
     #welcome-screen .container-main > *:nth-child(3) { animation-delay: 0.3s; }
     #welcome-screen .container-footer > * { animation-delay: 0.4s; }
-    #welcome-screen .welcome-options a { animation: none; } /* Handled by parent delay */
-
+    #welcome-screen .welcome-options a { animation: none; }
 
     .hero-image { width: 100%; max-width: 250px; height: auto; margin: -16px auto 16px; display: block; }
     .hero-image #sun-moon { transform-origin: center; transition: cy 1s ease-in-out, fill 1s ease-in-out; }
@@ -266,7 +262,7 @@
       position: relative;
       overflow: hidden;
     }
-    .options button::after { /* Shine effect */
+    .options button::after {
         content: '';
         position: absolute;
         top: -50%;
@@ -357,7 +353,6 @@
     .welcome-options a:hover { transform: translateY(-4px) scale(1.1); background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
     .welcome-options a svg { width: 28px; height: 28px; margin-bottom: 8px; stroke-width: 2; }
     
-    /* Settings Modal Styles */
     .settings-row {
         display: flex;
         justify-content: space-between;
@@ -399,19 +394,19 @@
     .review-option.correct-answer { background-color: rgba(50, 215, 75, 0.2); }
     .review-option.user-incorrect { background-color: rgba(255, 69, 58, 0.2); text-decoration: line-through; }
 
-    .gemini-feature {
+    .fact-feature {
         border: 1px solid var(--card-border);
         border-radius: 16px;
         padding: 16px;
         margin-top: 24px;
         background-color: rgba(var(--accent-rgb), 0.05);
     }
-    .gemini-feature h3 {
+    .fact-feature h3 {
         margin: 0 0 8px;
         font-size: 1rem;
         color: var(--accent);
     }
-    .gemini-feature p {
+    .fact-feature p {
         font-size: 0.9rem;
         margin: 0;
     }
@@ -433,6 +428,14 @@
         0% { transform: translateY(200%) scale(0.5); }
         60% { transform: translateY(-10px) scale(1.05); }
         100% { transform: translateY(0) scale(1); }
+    }
+
+    #mascot.hide {
+        animation: mascot-slide-out 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+    }
+    @keyframes mascot-slide-out {
+        from { transform: translateY(0) scale(1); opacity: 1; }
+        to { transform: translateY(200%) scale(0.5); opacity: 0; }
     }
     
     #mascot-message {
@@ -557,11 +560,8 @@
     <div id="mascot-message">Well done!</div>
     <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
       <g id="gyan-body">
-        <!-- Body -->
         <path d="M25 90 C20 70, 20 50, 25 35 H 75 C 80 50, 80 70, 75 90 Z" fill="#E0E0E0"/>
         <path d="M30 88 C25 70, 25 50, 30 40 H 70 C 75 50, 75 70, 70 88 Z" fill="white"/>
-        
-        <!-- Arms -->
         <g id="gyan-left-arm">
           <circle cx="20" cy="65" r="10" fill="#E0E0E0" />
           <circle cx="18" cy="65" r="7" fill="#4DD0E1" />
@@ -570,23 +570,14 @@
           <circle cx="80" cy="65" r="10" fill="#E0E0E0" />
           <circle cx="82" cy="65" r="7" fill="#4DD0E1" />
         </g>
-
-        <!-- Head -->
         <path d="M30 40 C 25 20, 30 5, 50 5 C 70 5, 75 20, 70 40 Z" fill="#FFFFFF"/>
-        <!-- Ears -->
         <path d="M30 20 L 20 5 L 35 15 Z" fill="#FFFFFF" stroke="#BDBDBD" stroke-width="2" stroke-linejoin="round"/>
         <path d="M70 20 L 80 5 L 65 15 Z" fill="#FFFFFF" stroke="#BDBDBD" stroke-width="2" stroke-linejoin="round"/>
         <path d="M32 19 L 25 8 L 36 15 Z" fill="#4DD0E1" />
         <path d="M68 19 L 75 8 L 64 15 Z" fill="#4DD0E1" />
-
-        <!-- Visor -->
         <path d="M35 38 C 30 25, 40 18, 50 18 C 60 18, 70 25, 65 38 Z" fill="#212121"/>
-        
-        <!-- Eyes -->
         <circle class="eye left" cx="45" cy="28" r="4" fill="#00E5FF"/>
         <circle class="eye right" cx="55" cy="28" r="4" fill="#00E5FF"/>
-        
-        <!-- Mouth on visor -->
         <path id="mouth" d="M48 35 C 49 36, 51 36, 52 35" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
       </g>
     </svg>
@@ -627,13 +618,13 @@
         </div>
         <h2 id="dynamic-greeting"></h2>
         <h1>Himachal Quiz Challenge</h1>
-        <p style="max-width: 450px; margin: 16px auto 0;">Test your knowledge of Himachal Pradesh. Each session features a new set of 30 questions with varying difficulty.</p>
+        <p style="max-width: 450px; margin: 16px auto 0;">Test your knowledge of Himachal Pradesh. Each session features a new set of questions with varying difficulty.</p>
       </header>
       <div class="container-main">
         <div id="top-score-highlight"></div>
-        <div id="gemini-feature" class="gemini-feature">
+        <div class="fact-feature">
             <h3>✨ Fact of the Day</h3>
-            <p id="gemini-fact-text">Fetching a fun fact...</p>
+            <p id="fact-text">Fetching a fun fact...</p>
         </div>
         <div id="leaderboard-area" class="leaderboard" style="margin-top: 16px;"></div>
       </div>
@@ -712,12 +703,10 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        // --- CONFIGURATION ---
-        const QUIZ_VERSION = '42.2';
-        const ADMIN_PASSWORD = 'hianime.2810@gmail.com';
+        const QUIZ_VERSION = '49.0';
+        const ADMIN_PASSWORD = 'admin123';
         const TOTAL_QUESTIONS_PER_ROUND = 20;
         
-        // --- BUILT-IN DATA ---
         const FACTS_OF_THE_DAY = [
             "Himachal Pradesh is often called the 'Land of the Gods' (Devbhumi).",
             "The Great Himalayan National Park, a UNESCO site, is in Himachal.",
@@ -733,52 +722,90 @@
             "Himachal Pradesh was formed on 25th January 1971.",
             "Nati is the most famous folk dance of the region.",
             "The Atal Tunnel is the longest highway tunnel above 10,000 feet.",
-            "Chail Cricket Ground is the highest in the world."
+            "Chail Cricket Ground is the highest in the world.",
+            "The state flower of Himachal Pradesh is the Pink Rhododendron.",
+            "Kasol, in the Parvati Valley, is famously known as the 'Amsterdam of India'.",
+            "Himachal Pradesh has the highest road in the world, stretching from Manali to Leh.",
+            "The state is a major producer of hydroelectric power for Northern India.",
+            "Bir Billing is a world-renowned destination for paragliding, having hosted the Paragliding World Cup.",
+            "The historic Viceregal Lodge in Shimla is where the decision to partition India was planned.",
+            "Over 90% of Himachal's population lives in rural areas, making it one of the least urbanized states.",
+            "The local deity of Malana, Jamlu Devta, has his own unique parliamentary system.",
+            "Chandigarh was designed to be the joint capital for both Punjab and Haryana, while Shimla served as Himachal's capital.",
+            "The state is rich in medicinal herbs and is sometimes called the 'Herbal State'."
         ];
 
         const BUILT_IN_SPECIAL_QUESTIONS = [
-            { question: "This serene lake, surrounded by deodar forests, is often called the 'Mini Switzerland of India'. A small, floating island is a key feature. What is this location?", options: ["Prashar Lake", "Khajjiar Lake", "Dal Lake", "Rewalsar Lake"], answer: "Khajjiar Lake", isHard: true, topic: "Geography" },
-            { question: "Located in the Spiti Valley, this ancient monastery is over a thousand years old and is a UNESCO World Heritage site. It's renowned for its stunning murals. Which monastery is this?", options: ["Key Monastery", "Dhankar Monastery", "Tabo Monastery", "Namgyal Monastery"], answer: "Tabo Monastery", isHard: true, topic: "History & Culture" },
-            { question: "I am a famous hot spring located in the Parvati Valley, revered by both Hindus and Sikhs. A Gurudwara and a temple stand here. What place am I?", options: ["Tattapani", "Vashisht", "Manikaran", "Kheerganga"], answer: "Manikaran", isHard: true, topic: "Geography" },
-            { question: "This engineering marvel, named after a former Prime Minister, drastically reduces travel time to Lahaul. It is the world's longest highway tunnel above 10,000 feet. What is it?", options: ["Jawahar Tunnel", "Dr. Syama Prasad Mookerjee Tunnel", "Atal Tunnel", "Rohtang Pass Tunnel"], answer: "Atal Tunnel", isHard: true, topic: "Modern Affairs" },
-            { question: "This former palace of the Maharaja of Patiala is now a luxury hotel. The world's highest cricket ground is also located here. Which town is it?", options: ["Kasauli", "Chail", "Dalhousie", "Naldehra"], answer: "Chail", isHard: true, topic: "History" },
-            { question: "I am a traditional form of embroidery from the Chamba district, known for its double-sided, intricate stitching. What am I?", options: ["Kangra Painting", "Kullu Shawl", "Thangka", "Chamba Rumal"], answer: "Chamba Rumal", isHard: true, topic: "Culture" },
-            { question: "This high-altitude, cold desert national park is located in Spiti and is home to the endangered snow leopard. What is its name?", options: ["Great Himalayan National Park", "Inderkilla National Park", "Pin Valley National Park", "Khirganga National Park"], answer: "Pin Valley National Park", isHard: true, topic: "Environment" },
-            { question: "I am a festive community feast where a variety of traditional dishes are served in a specific sequence on leaf plates. What am I?", options: ["Langar", "Sidu", "Dham", "Madra"], answer: "Dham", isHard: true, topic: "Culture" },
-            { question: "This famous international festival held in Kullu is unique because it begins when Dussehra festivities elsewhere end. What is it called?", options: ["Shimla Summer Festival", "Minjar Fair", "Kullu Dussehra", "Lavi Fair"], answer: "Kullu Dussehra", isHard: true, topic: "Culture" },
-            { question: "This town, the residence of the Dalai Lama, is a major center for the study of Buddhism and Tibetan culture. What is it?", options: ["Manali", "Dharamshala", "Palampur", "Rewalsar"], answer: "Dharamshala", isHard: true, topic: "Modern Affairs" }
+            { id: "S01", question: "This serene lake, surrounded by deodar forests, is often called the 'Mini Switzerland of India'. A small, floating island is a key feature. What is this location?", options: ["Prashar Lake", "Khajjiar Lake", "Dal Lake", "Rewalsar Lake"], answer: "Khajjiar Lake", isHard: true, topic: "Geography" },
+            { id: "S02", question: "Located in the Spiti Valley, this ancient monastery is over a thousand years old and is a UNESCO World Heritage site. It's renowned for its stunning murals. Which monastery is this?", options: ["Key Monastery", "Dhankar Monastery", "Tabo Monastery", "Namgyal Monastery"], answer: "Tabo Monastery", isHard: true, topic: "History & Culture" },
+            { id: "S03", question: "I am a famous hot spring located in the Parvati Valley, revered by both Hindus and Sikhs. A Gurudwara and a temple stand here. What place am I?", options: ["Tattapani", "Vashisht", "Manikaran", "Kheerganga"], answer: "Manikaran", isHard: true, topic: "Geography" },
+            { id: "S04", question: "This engineering marvel, named after a former Prime Minister, drastically reduces travel time to Lahaul. It is the world's longest highway tunnel above 10,000 feet. What is it?", options: ["Jawahar Tunnel", "Dr. Syama Prasad Mookerjee Tunnel", "Atal Tunnel", "Rohtang Pass Tunnel"], answer: "Atal Tunnel", isHard: true, topic: "Modern Affairs" },
+            { id: "S05", question: "This former palace of the Maharaja of Patiala is now a luxury hotel. The world's highest cricket ground is also located here. Which town is it?", options: ["Kasauli", "Chail", "Dalhousie", "Naldehra"], answer: "Chail", isHard: true, topic: "History" },
+            { id: "S06", question: "I am a traditional form of embroidery from the Chamba district, known for its double-sided, intricate stitching. What am I?", options: ["Kangra Painting", "Kullu Shawl", "Thangka", "Chamba Rumal"], answer: "Chamba Rumal", isHard: true, topic: "Culture" },
+            { id: "S07", question: "This high-altitude, cold desert national park is located in Spiti and is home to the endangered snow leopard. What is its name?", options: ["Great Himalayan National Park", "Inderkilla National Park", "Pin Valley National Park", "Khirganga National Park"], answer: "Pin Valley National Park", isHard: true, topic: "Environment" },
+            { id: "S08", question: "I am a festive community feast where a variety of traditional dishes are served in a specific sequence on leaf plates. What am I?", options: ["Langar", "Sidu", "Dham", "Madra"], answer: "Dham", isHard: true, topic: "Culture" },
+            { id: "S09", question: "This famous international festival held in Kullu is unique because it begins when Dussehra festivities elsewhere end. What is it called?", options: ["Shimla Summer Festival", "Minjar Fair", "Kullu Dussehra", "Lavi Fair"], answer: "Kullu Dussehra", isHard: true, topic: "Culture" },
+            { id: "S10", question: "This town, the residence of the Dalai Lama, is a major center for the study of Buddhism and Tibetan culture. What is it?", options: ["Manali", "Dharamshala", "Palampur", "Rewalsar"], answer: "Dharamshala", isHard: true, topic: "Modern Affairs" }
         ];
         
         const ALL_QUESTIONS = [
-            { question: "Which fruit is Himachal Pradesh famous for?", options: ["Mango","Apple","Banana","Guava"], answer: "Apple", topic: "Agriculture", hint: "It's a red, crunchy fruit often associated with Shimla.", explanation: "Himachal Pradesh is one of India's largest producers of apples, with the climate being ideal for their cultivation.", moreInfo: "The apple cultivation in Himachal was pioneered by Satyananda (formerly Samuel) Stokes, an American missionary who settled in the region in the early 20th century." },
-            { question: "What is the traditional Himachali cap called?", options: ["Topi","Pagdi","Kullu Cap","Turban"], answer: "Kullu Cap", topic: "Culture", hint: "It's a colorful woolen cap with a distinct flat top and decorative border.", explanation: "The Kullu Cap, or 'Kulluvi Topi', is a vibrant, woolen cap that is a symbol of Himachali culture, particularly from the Kullu valley.", moreInfo: "The colorful border on the front of the Kullu cap is a distinct feature. Different designs and colors can signify the region the wearer belongs to." },
-            { question: "Which river flows through Kangra valley?", options: ["Beas","Sutlej","Ravi","Chenab"], answer: "Beas", topic: "Geography", hint: "This river is one of the five rivers that give Punjab its name.", explanation: "The Beas River originates in the Himalayas and flows through the scenic Kangra Valley before entering the plains of Punjab.", moreInfo: "The Beas River is historically significant and was known as Arjikiya in the Vedas. It is believed to be the river that halted Alexander the Great's eastward expansion in 326 BCE." },
-            { question: "Shimla was the summer capital of which era?", options: ["British Raj","Mughal Empire","Maurya Empire","Gupta Empire"], answer: "British Raj", topic: "History", hint: "This period of British rule in India lasted until 1947.", explanation: "During the British Raj, Shimla served as the summer capital of India, allowing the administration to escape the intense heat of the plains.", moreInfo: "The decision to make Shimla the summer capital was made by Viceroy John Lawrence. The architecture in Shimla, like the Viceregal Lodge, still reflects its colonial past." },
-            { question: "Manali is located in which district?", options: ["Kullu","Solan","Mandi","Chamba"], answer: "Kullu", topic: "Geography", hint: "This district is famous for its valley and Dussehra celebrations.", explanation: "Manali is a popular tourist town situated in the Kullu district of Himachal Pradesh.", moreInfo: "Manali is named after the Sanatan Hindu lawgiver Manu. The name Manali is regarded as the derivative of 'Manu-Alaya' which literally means 'the abode of Manu'."},
-            { question: "What is a traditional dance of Kullu Valley?", options: ["Bhangra","Nati","Garba","Dandiya"], answer: "Nati", topic: "Culture", hint: "This slow, circular dance is performed in groups during festivals.", explanation: "Nati is the most popular folk dance of Himachal Pradesh, especially in the Kullu and Shimla regions. It holds a Guinness World Record for the largest folk dance.", moreInfo: "There are several regional variations of Nati, such as 'Kulluvi Nati', 'Shimla Nati', and 'Kinnauri Nati', each with its own distinct costume and rhythm." },
-            { question: "The Kalka-Shimla Railway is a UNESCO what?", options: ["World Heritage Site","National Park","Biosphere Reserve","Geopark"], answer: "World Heritage Site", topic: "History", hint: "This is a special designation for places of outstanding universal value.", explanation: "The Kalka-Shimla Railway is a UNESCO World Heritage Site, recognized for its impressive engineering and its role in the history of colonial India.", moreInfo: "The railway line was built in 1903 and crosses over 864 bridges and through 103 tunnels, making it an engineering marvel of its time." },
-            { question: "What is the state animal of Himachal Pradesh?", options: ["Musk Deer", "Snow Leopard", "Himalayan Tahr", "Black Bear"], answer: "Snow Leopard", topic: "Environment", hint: "This elusive big cat is found in the high, cold mountains.", explanation: "The Snow Leopard, a large cat native to the mountainous regions of Central and South Asia, is the state animal of Himachal Pradesh.", moreInfo: "The Spiti Valley in Himachal is considered one of the best places in the world to spot a Snow Leopard, earning it the nickname 'the grey ghost of the mountains'." },
-            { question: "What is a popular Himachali cuisine?", options: ["Sidu","Rogan Josh","Pani Puri","Dosa"], answer: "Sidu", topic:"Culture", hint:"It is a type of steamed bread.", explanation: "Sidu is a local delicacy made from wheat flour, often stuffed and steamed. It's usually eaten with ghee.", moreInfo: "The stuffing in Sidu can be made from walnuts, poppy seeds, or even pulses, and it's a staple during cold winters and celebrations."},
-            { question: "Which mountain range predominantly runs through Himachal?", options: ["Aravalli","Himalayas","Vindhya","Sahyadri"], answer: "Himalayas", topic: "Geography", hint:"It's the highest mountain range in the world.", explanation:"Himachal Pradesh is a Himalayan state, with several major ranges like the Dhauladhar and Pir Panjal passing through it.", moreInfo:"The name 'Himachal' itself translates to 'Land of the Snowy Mountains' in Sanskrit."},
-            { question: "The ancient Tabo Monastery is in which valley?", options: ["Kullu Valley", "Kangra Valley", "Spiti Valley", "Parvati Valley"], answer: "Spiti Valley", topic:"History & Culture", hint:"This is a high-altitude cold desert valley.", explanation:"Tabo Monastery is a prominent Buddhist site located in the remote Spiti Valley.", moreInfo:"Founded in 996 AD, it's often called the 'Ajanta of the Himalayas' for its magnificent murals and stucco sculptures."},
-            { question: "Which pass connects Kullu Valley with Lahaul and Spiti Valleys?", options: ["Rohtang Pass", "Bara-lacha la Pass", "Shipki La Pass", "Sach Pass"], answer: "Rohtang Pass", topic:"Geography", hint:"It's a famous high-altitude pass near Manali.", explanation:"Rohtang Pass is the primary gateway connecting the lush green Kullu Valley to the arid landscapes of Lahaul and Spiti.", moreInfo:"The name Rohtang means 'pile of corpses' in the local language, referring to the dangerous weather conditions that have claimed many lives over the centuries."},
-            { question: "Which town is famous for Tibetan monasteries?", options: ["Dharamshala","Solan","Chamba","Mandi"], answer: "Dharamshala", topic: "History & Culture", hint: "It is the current residence of the 14th Dalai Lama.", explanation: "Dharamshala, particularly the suburb of McLeod Ganj, is globally known as the home of the Dalai Lama and the Tibetan Government-in-Exile.", moreInfo: "The area is often called 'Little Lhasa' due to its large population of Tibetans and numerous monasteries, including the main Tsuglagkhang Complex." },
-            { question: "What is the staple food in Lahaul Valley, often used to make 'tsampa'?", options: ["Rice","Barley","Maize","Wheat"], answer: "Barley", topic:"Agriculture", hint: "This grain is well-suited to high-altitude, cold climates.", explanation: "Barley is a primary crop in the cold, arid region of Lahaul Valley. It is roasted and ground into a flour called 'tsampa'.", moreInfo: "Tsampa is a versatile food, often mixed with butter tea to form a dough called 'ngamphe' or used in porridges. It's a vital source of energy for people living at high altitudes."},
-            { question: "The Great Himalayan National Park is in which district?", options: ["Kullu","Lahaul","Spiti","Solan"], answer: "Kullu", topic: "Environment", hint: "This district is famous for its valley and international Dussehra festival.", explanation: "The Great Himalayan National Park, a UNESCO World Heritage Site, is located in the Kullu district.", moreInfo: "The park protects a vast ecosystem of Himalayan flora and fauna, including rare species like the Western Tragopan and the Snow Leopard." },
-            { question: "Which town is famous for its intricate woolen shawls?", options: ["Kullu","Solan","Chamba","Dharamshala"], answer: "Kullu", topic:"Culture", hint:"These shawls are known for their geometric patterns and bright borders.", explanation:"Kullu is renowned for its hand-woven shawls, which are characterized by their simple geometric designs and vibrant colors.", moreInfo: "The art of Kullu shawl weaving has been granted a Geographical Indication (GI) tag to protect its authenticity and heritage."},
-            { question: "The Christ Church, a prominent landmark, is located in which hill station?", options: ["Dalhousie","Kasauli","Shimla","Manali"], answer: "Shimla", topic:"History", hint: "This city was the summer capital of British India.", explanation: "The Christ Church, with its distinctive neo-gothic architecture, is one of the most iconic landmarks located on The Ridge in Shimla.", moreInfo: "It is the second oldest church in North India, built between 1846 and 1857. Its stained glass windows are particularly famous and represent virtues like faith, hope, and charity."},
-            { question: "Modern activism around the River Beas has focused on?", options: ["Overfishing","Illegal sand mining and hydropower impacts","Lack of boat traffic","Seasonal flooding"], answer: "Illegal sand mining and hydropower impacts", isHard: true, topic: "Modern Affairs", hint: "Think about industrial and energy-related impacts on rivers.", explanation: "Environmental groups and locals have raised concerns about the ecological damage from widespread illegal sand mining and the construction of numerous hydropower projects on the Beas." },
-            { question: "A major climate change impact observed in the Himachal Himalayas is:", options: ["Consistent increase in snowfall","Erratic weather patterns and glacial retreat","Higher crop yields everywhere","Stable year-round temperatures"], answer: "Erratic weather patterns and glacial retreat", isHard: true, topic: "Environment", hint: "Global warming has a direct effect on ice and weather stability.", explanation: "Climate change has led to more unpredictable weather, including intense rainfall events, and a noticeable retreat of glaciers, which are a critical source of water for rivers." },
-            { question: "Which renewable energy sources are being significantly expanded in Himachal?", options: ["Coal & Geothermal","Solar & Hydropower","Petroleum & Wind","Nuclear & Tidal"], answer: "Solar & Hydropower", isHard: true, topic: "Modern Affairs", hint: "The state leverages its rivers and sunny slopes.", explanation: "Himachal Pradesh is heavily investing in expanding its solar power capacity and already has a massive installed base of hydropower, making it a key player in India's renewable energy goals." },
-            { question: "The Atal Tunnel, a modern engineering marvel, primarily reduces:", options: ["Air pollution","The need for tourism","Distance & winter travel time to Lahaul","Scenery on the drive"], answer: "Distance & winter travel time to Lahaul", isHard: true, topic: "Modern Affairs", hint: "It provides all-weather connectivity to a previously cut-off region.", explanation: "The Atal Tunnel bypasses the Rohtang Pass, providing all-year connectivity to the Lahaul Valley, which was previously inaccessible for about six months every winter due to heavy snowfall." },
-            { question: "'Smart villages' initiatives in Himachal Pradesh primarily focus on improving:", options: ["Only traditional farming methods","Digital infrastructure, e-governance, and services","Manual labor opportunities","Isolation from urban centers"], answer: "Digital infrastructure, e-governance, and services", isHard: true, topic:"Modern Affairs", hint:"Think about how technology can connect rural areas.", explanation:"The 'Smart Village' concept aims to bridge the rural-urban divide by providing amenities like internet connectivity, digital services, and improved public infrastructure in villages."},
-            { question: "How has the gig economy changed youth employment in towns?", options: ["Offers lifetime job security","Long-term contracts","Flexible task-based work like delivery services","Exclusive artisan jobs"], answer: "Flexible task-based work like delivery services", isHard: true, topic:"Modern Affairs", hint:"This type of work is often app-based and on-demand.", explanation:"The gig economy has provided young people in Himachali towns with flexible, task-based work opportunities, primarily through app-based platforms for food delivery and ride-sharing."},
-            { question: "What modern technology helps farmers in Himachal better track crop health and soil moisture?", options: ["Radio broadcasts","Mobile apps & IoT sensors","Town criers","Printed manuals"], answer: "Mobile apps & IoT sensors", isHard: true, topic:"Agriculture", hint:"This involves using connected devices to gather data.", explanation:"Modern agricultural practices in Himachal are increasingly adopting Internet of Things (IoT) sensors and mobile applications to monitor soil conditions, weather, and crop health in real-time."},
-            { question: "What is a key focus of the 'Natural Farming Khushhal Kisan Yojana' scheme in Himachal?", options: ["Promoting use of chemical fertilizers", "Reducing dependence on chemicals", "Exclusively growing cash crops", "Mechanizing all farms"], answer: "Reducing dependence on chemicals", isHard: true, topic:"Agriculture", hint:"The name 'Natural Farming' is a big clue.", explanation:"The 'Prakritik Kheti Khushhal Kisan Yojana' is a state-led initiative to promote zero-budget natural farming, which aims to eliminate the use of chemical fertilizers and pesticides."},
-            { question: "The 'Himachal Pradesh State Data Centre' is a modern initiative for what purpose?", options: ["Storing historical photos", "Centralizing e-governance applications", "Tracking tourist movements", "Broadcasting radio signals"], answer: "Centralizing e-governance applications", isHard: true, topic:"Modern Affairs", hint:"It's a digital backbone for government services.", explanation:"The State Data Centre (SDC) is a core infrastructure project designed to host and manage all government websites, applications, and digital services in a secure and centralized manner."}
+            { id: "A01", question: "Which fruit is Himachal Pradesh famous for?", options: ["Mango","Apple","Banana","Guava"], answer: "Apple", topic: "Agriculture", hint: "It's a red, crunchy fruit often associated with Shimla.", explanation: "Himachal Pradesh is one of India's largest producers of apples, with the climate being ideal for their cultivation.", moreInfo: "The apple cultivation in Himachal was pioneered by Satyananda (formerly Samuel) Stokes, an American missionary who settled in the region in the early 20th century." },
+            { id: "A02", question: "What is the traditional Himachali cap called?", options: ["Topi","Pagdi","Kullu Cap","Turban"], answer: "Kullu Cap", topic: "Culture", hint: "It's a colorful woolen cap with a distinct flat top and decorative border.", explanation: "The Kullu Cap, or 'Kulluvi Topi', is a vibrant, woolen cap that is a symbol of Himachali culture, particularly from the Kullu valley.", moreInfo: "The colorful border on the front of the Kullu cap is a distinct feature. Different designs and colors can signify the region the wearer belongs to." },
+            { id: "A03", question: "Which river flows through Kangra valley?", options: ["Beas","Sutlej","Ravi","Chenab"], answer: "Beas", topic: "Geography", hint: "This river is one of the five rivers that give Punjab its name.", explanation: "The Beas River originates in the Himalayas and flows through the scenic Kangra Valley before entering the plains of Punjab.", moreInfo: "The Beas River is historically significant and was known as Arjikiya in the Vedas. It is believed to be the river that halted Alexander the Great's eastward expansion in 326 BCE." },
+            { id: "A04", question: "Shimla was the summer capital of which era?", options: ["British Raj","Mughal Empire","Maurya Empire","Gupta Empire"], answer: "British Raj", topic: "History", hint: "This period of British rule in India lasted until 1947.", explanation: "During the British Raj, Shimla served as the summer capital of India, allowing the administration to escape the intense heat of the plains.", moreInfo: "The decision to make Shimla the summer capital was made by Viceroy John Lawrence. The architecture in Shimla, like the Viceregal Lodge, still reflects its colonial past." },
+            { id: "A05", question: "Manali is located in which district?", options: ["Kullu","Solan","Mandi","Chamba"], answer: "Kullu", topic: "Geography", hint: "This district is famous for its valley and Dussehra celebrations.", explanation: "Manali is a popular tourist town situated in the Kullu district of Himachal Pradesh.", moreInfo: "Manali is named after the Sanatan Hindu lawgiver Manu. The name Manali is regarded as the derivative of 'Manu-Alaya' which literally means 'the abode of Manu'."},
+            { id: "A06", question: "What is a traditional dance of Kullu Valley?", options: ["Bhangra","Nati","Garba","Dandiya"], answer: "Nati", topic: "Culture", hint: "This slow, circular dance is performed in groups during festivals.", explanation: "Nati is the most popular folk dance of Himachal Pradesh, especially in the Kullu and Shimla regions. It holds a Guinness World Record for the largest folk dance.", moreInfo: "There are several regional variations of Nati, such as 'Kulluvi Nati', 'Shimla Nati', and 'Kinnauri Nati', each with its own distinct costume and rhythm." },
+            { id: "A07", question: "The Kalka-Shimla Railway is a UNESCO what?", options: ["World Heritage Site","National Park","Biosphere Reserve","Geopark"], answer: "World Heritage Site", topic: "History", hint: "This is a special designation for places of outstanding universal value.", explanation: "The Kalka-Shimla Railway is a UNESCO World Heritage Site, recognized for its impressive engineering and its role in the history of colonial India.", moreInfo: "The railway line was built in 1903 and crosses over 864 bridges and through 103 tunnels, making it an engineering marvel of its time." },
+            { id: "A08", question: "What is the state animal of Himachal Pradesh?", options: ["Musk Deer", "Snow Leopard", "Himalayan Tahr", "Black Bear"], answer: "Snow Leopard", topic: "Environment", hint: "This elusive big cat is found in the high, cold mountains.", explanation: "The Snow Leopard, a large cat native to the mountainous regions of Central and South Asia, is the state animal of Himachal Pradesh.", moreInfo: "The Spiti Valley in Himachal is considered one of the best places in the world to spot a Snow Leopard, earning it the nickname 'the grey ghost of the mountains'." },
+            { id: "A09", question: "What is a popular Himachali cuisine?", options: ["Sidu","Rogan Josh","Pani Puri","Dosa"], answer: "Sidu", topic:"Culture", hint:"It is a type of steamed bread.", explanation: "Sidu is a local delicacy made from wheat flour, often stuffed and steamed. It's usually eaten with ghee.", moreInfo: "The stuffing in Sidu can be made from walnuts, poppy seeds, or even pulses, and it's a staple during cold winters and celebrations."},
+            { id: "A10", question: "Which mountain range predominantly runs through Himachal?", options: ["Aravalli","Himalayas","Vindhya","Sahyadri"], answer: "Himalayas", topic: "Geography", hint:"It's the highest mountain range in the world.", explanation:"Himachal Pradesh is a Himalayan state, with several major ranges like the Dhauladhar and Pir Panjal passing through it.", moreInfo:"The name 'Himachal' itself translates to 'Land of the Snowy Mountains' in Sanskrit."},
+            { id: "A11", question: "The ancient Tabo Monastery is in which valley?", options: ["Kullu Valley", "Kangra Valley", "Spiti Valley", "Parvati Valley"], answer: "Spiti Valley", topic:"History & Culture", hint:"This is a high-altitude cold desert valley.", explanation:"Tabo Monastery is a prominent Buddhist site located in the remote Spiti Valley.", moreInfo:"Founded in 996 AD, it's often called the 'Ajanta of the Himalayas' for its magnificent murals and stucco sculptures."},
+            { id: "A12", question: "Which pass connects Kullu Valley with Lahaul and Spiti Valleys?", options: ["Rohtang Pass", "Bara-lacha la Pass", "Shipki La Pass", "Sach Pass"], answer: "Rohtang Pass", topic:"Geography", hint:"It's a famous high-altitude pass near Manali.", explanation:"Rohtang Pass is the primary gateway connecting the lush green Kullu Valley to the arid landscapes of Lahaul and Spiti.", moreInfo:"The name Rohtang means 'pile of corpses' in the local language, referring to the dangerous weather conditions that have claimed many lives over the centuries."},
+            { id: "A13", question: "Which town is famous for Tibetan monasteries?", options: ["Dharamshala","Solan","Chamba","Mandi"], answer: "Dharamshala", topic: "History & Culture", hint: "It is the current residence of the 14th Dalai Lama.", explanation: "Dharamshala, particularly the suburb of McLeod Ganj, is globally known as the home of the Dalai Lama and the Tibetan Government-in-Exile.", moreInfo: "The area is often called 'Little Lhasa' due to its large population of Tibetans and numerous monasteries, including the main Tsuglagkhang Complex." },
+            { id: "A14", question: "What is the staple food in Lahaul Valley, often used to make 'tsampa'?", options: ["Rice","Barley","Maize","Wheat"], answer: "Barley", topic:"Agriculture", hint: "This grain is well-suited to high-altitude, cold climates.", explanation: "Barley is a primary crop in the cold, arid region of Lahaul Valley. It is roasted and ground into a flour called 'tsampa'.", moreInfo: "Tsampa is a versatile food, often mixed with butter tea to form a dough called 'ngamphe' or used in porridges. It's a vital source of energy for people living at high altitudes."},
+            { id: "A15", question: "The Great Himalayan National Park is in which district?", options: ["Kullu","Lahaul","Spiti","Solan"], answer: "Kullu", topic: "Environment", hint: "This district is famous for its valley and international Dussehra festival.", explanation: "The Great Himalayan National Park, a UNESCO World Heritage Site, is located in the Kullu district.", moreInfo: "The park protects a vast ecosystem of Himalayan flora and fauna, including rare species like the Western Tragopan and the Snow Leopard." },
+            { id: "A16", question: "Which town is famous for its intricate woolen shawls?", options: ["Kullu","Solan","Chamba","Dharamshala"], answer: "Kullu", topic:"Culture", hint:"These shawls are known for their geometric patterns and bright borders.", explanation:"Kullu is renowned for its hand-woven shawls, which are characterized by their simple geometric designs and vibrant colors.", moreInfo: "The art of Kullu shawl weaving has been granted a Geographical Indication (GI) tag to protect its authenticity and heritage."},
+            { id: "A17", question: "The Christ Church, a prominent landmark, is located in which hill station?", options: ["Dalhousie","Kasauli","Shimla","Manali"], answer: "Shimla", topic:"History", hint: "This city was the summer capital of British India.", explanation: "The Christ Church, with its distinctive neo-gothic architecture, is one of the most iconic landmarks located on The Ridge in Shimla.", moreInfo: "It is the second oldest church in North India, built between 1846 and 1857. Its stained glass windows are particularly famous and represent virtues like faith, hope, and charity."},
+            { id: "A18", question: "Modern activism around the River Beas has focused on?", options: ["Overfishing","Illegal sand mining and hydropower impacts","Lack of boat traffic","Seasonal flooding"], answer: "Illegal sand mining and hydropower impacts", isHard: true, topic: "Modern Affairs", hint: "Think about industrial and energy-related impacts on rivers.", explanation: "Environmental groups and locals have raised concerns about the ecological damage from widespread illegal sand mining and the construction of numerous hydropower projects on the Beas." },
+            { id: "A19", question: "A major climate change impact observed in the Himachal Himalayas is:", options: ["Consistent increase in snowfall","Erratic weather patterns and glacial retreat","Higher crop yields everywhere","Stable year-round temperatures"], answer: "Erratic weather patterns and glacial retreat", isHard: true, topic: "Environment", hint: "Global warming has a direct effect on ice and weather stability.", explanation: "Climate change has led to more unpredictable weather, including intense rainfall events, and a noticeable retreat of glaciers, which are a critical source of water for rivers." },
+            { id: "A20", question: "Which renewable energy sources are being significantly expanded in Himachal?", options: ["Coal & Geothermal","Solar & Hydropower","Petroleum & Wind","Nuclear & Tidal"], answer: "Solar & Hydropower", isHard: true, topic: "Modern Affairs", hint: "The state leverages its rivers and sunny slopes.", explanation: "Himachal Pradesh is heavily investing in expanding its solar power capacity and already has a massive installed base of hydropower, making it a key player in India's renewable energy goals." },
+            { id: "A21", question: "The Atal Tunnel, a modern engineering marvel, primarily reduces:", options: ["Air pollution","The need for tourism","Distance & winter travel time to Lahaul","Scenery on the drive"], answer: "Distance & winter travel time to Lahaul", isHard: true, topic: "Modern Affairs", hint: "It provides all-weather connectivity to a previously cut-off region.", explanation: "The Atal Tunnel bypasses the Rohtang Pass, providing all-year connectivity to the Lahaul Valley, which was previously inaccessible for about six months every winter due to heavy snowfall." },
+            { id: "A22", question: "'Smart villages' initiatives in Himachal Pradesh primarily focus on improving:", options: ["Only traditional farming methods","Digital infrastructure, e-governance, and services","Manual labor opportunities","Isolation from urban centers"], answer: "Digital infrastructure, e-governance, and services", isHard: true, topic:"Modern Affairs", hint:"Think about how technology can connect rural areas.", explanation:"The 'Smart Village' concept aims to bridge the rural-urban divide by providing amenities like internet connectivity, digital services, and improved public infrastructure in villages."},
+            { id: "A23", question: "How has the gig economy changed youth employment in towns?", options: ["Offers lifetime job security","Long-term contracts","Flexible task-based work like delivery services","Exclusive artisan jobs"], answer: "Flexible task-based work like delivery services", isHard: true, topic:"Modern Affairs", hint:"This type of work is often app-based and on-demand.", explanation:"The gig economy has provided young people in Himachali towns with flexible, task-based work opportunities, primarily through app-based platforms for food delivery and ride-sharing."},
+            { id: "A24", question: "What modern technology helps farmers in Himachal better track crop health and soil moisture?", options: ["Radio broadcasts","Mobile apps & IoT sensors","Town criers","Printed manuals"], answer: "Mobile apps & IoT sensors", isHard: true, topic:"Agriculture", hint:"This involves using connected devices to gather data.", explanation:"Modern agricultural practices in Himachal are increasingly adopting Internet of Things (IoT) sensors and mobile applications to monitor soil conditions, weather, and crop health in real-time."},
+            { id: "A25", question: "What is a key focus of the 'Natural Farming Khushhal Kisan Yojana' scheme in Himachal?", options: ["Promoting use of chemical fertilizers", "Reducing dependence on chemicals", "Exclusively growing cash crops", "Mechanizing all farms"], answer: "Reducing dependence on chemicals", isHard: true, topic:"Agriculture", hint:"The name 'Natural Farming' is a big clue.", explanation:"The 'Prakritik Kheti Khushhal Kisan Yojana' is a state-led initiative to promote zero-budget natural farming, which aims to eliminate the use of chemical fertilizers and pesticides."},
+            { id: "A26", question: "The 'Himachal Pradesh State Data Centre' is a modern initiative for what purpose?", options: ["Storing historical photos", "Centralizing e-governance applications", "Tracking tourist movements", "Broadcasting radio signals"], answer: "Centralizing e-governance applications", isHard: true, topic:"Modern Affairs", hint:"It's a digital backbone for government services.", explanation:"The State Data Centre (SDC) is a core infrastructure project designed to host and manage all government websites, applications, and digital services in a secure and centralized manner."},
+            { id: "A27", question: "Which of these is a famous trek starting from Dharamshala?", options: ["Hampta Pass", "Triund Trek", "Bhrigu Lake Trek", "Pin Parvati Pass"], answer: "Triund Trek", topic: "Tourism", hint: "This popular trek offers stunning views of the Dhauladhar range.", explanation: "The Triund Trek is one of the most popular short treks in Himachal, known for its well-defined trail and breathtaking views of the Kangra valley and Dhauladhar mountains.", moreInfo: "The trek can be completed in a day, but many prefer to camp overnight at the top to witness a spectacular sunset and sunrise." },
+            { id: "A28", question: "The historical Kangra Fort was originally built by which dynasty?", options: ["Mughals", "British", "Katoch Dynasty", "Guptas"], answer: "Katoch Dynasty", topic: "History", hint: "They are an ancient royal family of the Kangra region.", explanation: "The Kangra Fort, one of the oldest forts in India, is believed to have been built by the royal Katoch dynasty, whose history dates back to the ancient Trigarta Kingdom mentioned in the Mahabharata.", moreInfo: "The fort has been captured by various rulers, including Mahmud of Ghazni, the Mughals, and eventually the British, before being heavily damaged in a 1905 earthquake." },
+            { id: "A29", question: "What is 'Madra', a popular dish from the Chamba region?", options: ["A sweet pancake", "A spicy lentil soup", "A chickpea and yogurt-based curry", "A type of steamed rice"], answer: "A chickpea and yogurt-based curry", topic: "Culture", hint: "It's a creamy dish often part of the traditional 'Dham' feast.", explanation: "Madra is a thick, yogurt-based gravy dish, typically made with chickpeas (chana) or kidney beans (rajma), and is a staple in Himachali cuisine, especially during festive meals.", moreInfo: "The unique flavor of Madra comes from a blend of spices like cardamom, cloves, cinnamon, and turmeric, cooked slowly in ghee." },
+            { id: "A30", question: "The Parvati Valley is particularly famous for which village?", options: ["Shimla", "Manali", "Kasol", "Dharamshala"], answer: "Kasol", topic: "Tourism", hint: "This village is often called 'Mini-Israel' due to its many Israeli tourists.", explanation: "Kasol, situated on the banks of the Parvati River, is a major hub for backpackers and trekkers, known for its scenic beauty, hippie culture, and proximity to treks like Kheerganga.", moreInfo: "The village has a significant Israeli population, which is reflected in its street signs and cuisine." },
+            { id: "A31", question: "What does the 'Minjar Fair', held in Chamba, celebrate?", options: ["The apple harvest", "The triumph of good over evil", "The blossoming of maize and paddy", "The start of winter"], answer: "The blossoming of maize and paddy", topic: "Culture", hint: "The name 'Minjar' refers to the silk tassels of these crops.", explanation: "The Minjar Fair is a week-long harvest festival in Chamba that celebrates the growth of maize and paddy shoots. 'Minjar' refers to the golden silk tassels of the corn cob.", moreInfo: "The festival culminates in a grand procession where offerings, including a coconut and a 'minjar', are immersed in the Ravi River." },
+            { id: "A32", question: "Which Viceroy of India made Shimla his official residence?", options: ["Lord Curzon", "Lord Dalhousie", "Lord Ripon", "Lord Lytton"], answer: "Lord Dalhousie", topic: "History", hint: "He was responsible for introducing the Doctrine of Lapse.", explanation: "Lord Dalhousie was instrumental in developing Shimla as a summer retreat. He founded the town of Dalhousie and was one of the key figures who established Shimla's importance for the British administration.", moreInfo: "The Hindustan-Tibet Road, a strategic and engineering marvel, was also initiated under his governance." },
+            { id: "A33", question: "The Bhakra Dam is built on which river?", options: ["Beas", "Yamuna", "Ravi", "Sutlej"], answer: "Sutlej", topic: "Geography", hint: "This river enters Himachal from Tibet.", explanation: "The Bhakra Dam, a concrete gravity dam, is constructed across the Sutlej River in Bilaspur, Himachal Pradesh. It forms the Gobind Sagar reservoir.", moreInfo: "At the time of its completion in 1963, it was one of the highest gravity dams in the world and was described by Jawaharlal Nehru as a 'temple of modern India'." },
+            { id: "A34", question: "Which artist's home in Naggar is now a famous art gallery?", options: ["Amrita Sher-Gil", "M. F. Husain", "Sobha Singh", "Nicholas Roerich"], answer: "Nicholas Roerich", topic: "Culture", hint: "He was a Russian artist known for his paintings of the Himalayas.", explanation: "The Russian artist and philosopher Nicholas Roerich settled in Naggar in the Kullu Valley. His residence is now the Roerich Art Gallery, showcasing his stunning paintings of the Himalayan landscapes.", moreInfo: "The gallery is a major cultural center and attracts art lovers from all over the world." },
+            { id: "A35", question: "The 'Shoolini Mela' is a famous annual fair in which town?", options: ["Solan", "Mandi", "Una", "Hamirpur"], answer: "Solan", topic: "Culture", hint: "The town is named after the goddess Shoolini.", explanation: "The Shoolini Mela is a 3-day fair held in Solan every June to honor the goddess Shoolini Devi, the patron deity of the region.", moreInfo: "The fair is famous for its cultural performances, wrestling matches (thoda), and vibrant market." },
+            { id: "A36", question: "Which valley is known as the 'Valley of Gods'?", options: ["Kullu Valley", "Kangra Valley", "Spiti Valley", "Sangla Valley"], answer: "Kullu Valley", topic: "Geography", hint: "This valley is famous for its Dussehra celebrations where deities from other villages gather.", explanation: "The Kullu Valley is often referred to as the 'Valley of Gods' because of the large number of temples and the belief that local deities (devtas) reside in the valley and congregate for festivals.", moreInfo: "The Kullu Dussehra is a prime example, where hundreds of deities are carried on palanquins to pay homage to the principal deity, Lord Raghunath." },
+            { id: "A37", question: "The ancient capital of the Kullu Kingdom was at:", options: ["Manali", "Naggar", "Kullu", "Sultanpur"], answer: "Naggar", topic: "History", hint: "It is home to a historic castle, now a heritage hotel.", explanation: "Before moving to Sultanpur (modern-day Kullu), the capital of the Kullu Rajas was at Naggar. The Naggar Castle, built in the 15th century, served as their royal residence.", moreInfo: "The castle is a fine example of traditional Kath-Kuni architecture, which uses interlocking wooden beams and stones without mortar." },
+            { id: "A38", question: "What is 'Thangka' painting?", options: ["A form of wall mural", "A type of pottery design", "A Tibetan Buddhist painting on cotton or silk", "A style of carpet weaving"], answer: "A Tibetan Buddhist painting on cotton or silk", topic: "Culture", hint: "These are often used for meditation and found in monasteries.", explanation: "Thangka paintings are a traditional form of Tibetan Buddhist art, usually depicting a deity, scene, or mandala. They are painted on cotton or silk and are meant to be rolled up when not on display.", moreInfo: "These intricate paintings are considered sacred and are used as teaching tools and aids for meditation in Buddhist culture." },
+            { id: "A39", question: "The highest post office in the world is located in which part of Himachal?", options: ["Shimla", "Hikkim (Spiti)", "Kaza", "Keylong"], answer: "Hikkim (Spiti)", topic: "Modern Affairs", hint: "It is situated in a high-altitude cold desert region.", explanation: "The post office in Hikkim, a village in the Spiti Valley, is the highest in the world, located at an altitude of over 14,500 feet.", moreInfo: "Sending a letter from this post office is a popular activity for tourists visiting the remote Spiti Valley." },
+            { id: "A40", question: "What is the traditional sport of 'Thoda'?", options: ["A form of wrestling", "A type of martial art with archery", "A team-based ball game", "A board game"], answer: "A type of martial art with archery", topic: "Culture", hint: "It is performed during fairs and festivals, combining dance and combat.", explanation: "'Thoda' is a traditional martial art form from Himachal Pradesh that relies on skill in archery. Two teams aim arrows with blunted tips at the legs of their opponents.", moreInfo: "The sport is believed to have originated from the epic Mahabharata and is performed with much fanfare, music, and dance." },
+            { id: "A41", question: "Pandoh Dam is located in which district?", options: ["Kullu", "Shimla", "Mandi", "Bilaspur"], answer: "Mandi", topic: "Geography", hint: "This district is known for its many ancient temples.", explanation: "The Pandoh Dam is an embankment dam on the Beas River in the Mandi district. It is part of a run-of-the-river power project.", moreInfo: "The dam diverts water from the Beas to the Sutlej river through a long series of tunnels and channels for power generation." },
+            { id: "A42", question: "The town of Dalhousie is named after:", options: ["A local king", "A British Governor-General", "A type of flower", "A river"], answer: "A British Governor-General", topic: "History", hint: "He was the Governor-General of India from 1848 to 1856.", explanation: "Dalhousie, a popular hill station, was established in 1854 by the British Empire as a summer retreat and is named after Lord Dalhousie.", moreInfo: "The town is known for its beautiful colonial-era architecture, including churches like St. Francis' and St. John's." },
+            { id: "A43", question: "Which place in Himachal is known for its salt mines?", options: ["Gumma and Drang", "Tattapani", "Jawalaji", "Paonta Sahib"], answer: "Gumma and Drang", topic: "Geography", hint: "These are located in the Mandi district.", explanation: "The rock salt mines at Gumma and Drang in the Mandi district are a significant geological feature of Himachal Pradesh.", moreInfo: "These mines have been a source of rock salt for centuries and are the only known rock salt deposits in the Indian Himalayas." },
+            { id: "A44", question: "What is 'Pashmina'?", options: ["A type of grain", "A fine type of cashmere wool", "A musical instrument", "A traditional hat"], answer: "A fine type of cashmere wool", topic: "Culture", hint: "It is known for its softness and warmth, used to make shawls.", explanation: "Pashmina is a fine type of cashmere wool derived from the fleece of the Changthangi goat, native to the high plateaus of the Himalayas. It is used to make luxurious shawls.", moreInfo: "Authentic Pashmina shawls are incredibly soft, light, and warm, making them highly prized textiles around the world." },
+            { id: "A45", question: "The Maharana Pratap Sagar is also known as:", options: ["Pong Dam Lake", "Gobind Sagar Lake", "Prashar Lake", "Rewalsar Lake"], answer: "Pong Dam Lake", topic: "Geography", hint: "It is a large reservoir on the Beas River.", explanation: "Maharana Pratap Sagar is the name of the reservoir created by the Pong Dam on the Beas River in the Kangra district. It is a well-known wildlife sanctuary.", moreInfo: "The lake is a major birdwatching site, attracting hundreds of thousands of migratory birds during the winter season." },
+            { id: "A46", question: "What is the primary language of the Kinnaur district?", options: ["Hindi", "Pahari", "Kinnauri", "Tibetan"], answer: "Kinnauri", topic: "Culture", hint: "This language belongs to the Tibeto-Burman family.", explanation: "While Hindi is the official language, the native language spoken by the people of the Kinnaur district is Kinnauri, which has several distinct dialects.", moreInfo: "The culture of Kinnaur shows a unique blend of Tibetan Buddhism and Hinduism, which is also reflected in its language and traditions." },
+            { id: "A47", question: "The 'Lavi Fair' in Rampur is primarily a:", options: ["Religious festival", "Music festival", "Trade fair", "Film festival"], answer: "Trade fair", topic: "History & Culture", hint: "It is one of the oldest commercial fairs in the region.", explanation: "The Lavi Fair, held in Rampur Bushahr, is a historic trade fair that has been a center for commerce between Himachal, Tibet, and other regions for centuries.", moreInfo: "Traders come to sell and buy goods like wool, dry fruits, and locally bred Chamurthi horses, a breed known for its endurance at high altitudes." },
+            { id: "A48", question: "Which national highway connects Shimla to Chandigarh?", options: ["NH 44", "NH 5", "NH 3", "NH 7"], answer: "NH 5", topic: "Modern Affairs", hint: "This highway continues up towards the border with China.", explanation: "National Highway 5 (NH 5) is the main road connecting the plains of Chandigarh to the state capital, Shimla, and it continues further into the state.", moreInfo: "Previously known as NH 22, it is a crucial lifeline for the state's economy and tourism." },
+            { id: "A49", question: "The State Museum of Himachal Pradesh is located in:", options: ["Dharamshala", "Manali", "Shimla", "Mandi"], answer: "Shimla", topic: "Culture", hint: "It is housed in a colonial mansion near the Viceregal Lodge.", explanation: "The Himachal State Museum is located in Shimla in a Victorian mansion. It houses a rich collection of the state's cultural and archaeological heritage.", moreInfo: "The museum's collection includes ancient stone sculptures, miniature paintings (especially from the Kangra school), coins, and anthropological items." },
+            { id: "A50", question: "What is Kath-Kuni architecture?", options: ["A style using mud bricks", "A style of temple with a sloping roof", "A style using interlocking wood and stone without mortar", "A modern style with glass and steel"], answer: "A style using interlocking wood and stone without mortar", topic: "Culture", hint: "This traditional style is earthquake-resistant.", explanation: "Kath-Kuni is a traditional building technique found in the Himalayan regions of Himachal. It involves layering interlocking wooden beams and stones without using mortar, which provides flexibility and makes the structures resistant to earthquakes.", moreInfo: "Many ancient temples and forts, like the Naggar Castle and Bhimakali Temple, are excellent examples of this indigenous architectural style." },
+            { id: "A51", question: "The source of the Parvati River is at which lake?", options: ["Bhrigu Lake", "Chandra Taal", "Manimahesh Lake", "Mantilai Lake"], answer: "Mantilai Lake", isHard: true, topic: "Geography", hint: "This lake is located at the foot of the Parvati Pass.", explanation: "The Parvati River, a major tributary of the Beas, originates from the Mantilai Lake, which is fed by the melting snow and ice of the surrounding glaciers in the Parvati Valley.", moreInfo: "The trek to Mantilai Lake is a challenging high-altitude trek that takes adventurers deep into the Parvati Valley." },
+            { id: "A52", question: "Who was the first Chief Minister of Himachal Pradesh?", options: ["Thakur Ram Lal", "Shanta Kumar", "Virbhadra Singh", "Yashwant Singh Parmar"], answer: "Yashwant Singh Parmar", isHard: true, topic: "History", hint: "He is often called the 'Architect of Himachal Pradesh'.", explanation: "Dr. Yashwant Singh Parmar was the first Chief Minister of Himachal Pradesh. He played a crucial role in the political movement that led to Himachal attaining full statehood in 1971.", moreInfo: "His efforts were instrumental in shaping the state's identity and administrative structure, earning him the title 'Architect of Himachal Pradesh'." },
+            { id: "A53", question: "The 'Sui Mela' in Chamba is exclusively celebrated by:", options: ["Men", "Children", "Women and children", "Elderly people"], answer: "Women and children", isHard: true, topic: "Culture", hint: "It commemorates the sacrifice of a queen.", explanation: "The Sui Mela is a unique fair held in Chamba that is attended exclusively by women and children. It commemorates the sacrifice of Rani Naina Devi, who gave her life to bring water to the town.", moreInfo: "During the fair, women sing traditional folk songs (ghurehi) and pay tribute to the queen at her temple." },
+            { id: "A54", question: "What is 'Lahauli Pattu'?", options: ["A type of spicy pickle", "A traditional woolen dress worn by women", "A folk song", "A type of pottery"], answer: "A traditional woolen dress worn by women", isHard: true, topic: "Culture", hint: "It is a thick, woven garment worn in the cold region of Lahaul.", explanation: "'Pattu' is a traditional woolen dress, similar to a sari, worn by women in the Lahaul and Spiti district. It is made of thick, locally woven wool to provide warmth in the harsh climate.", moreInfo: "The pattu is often adorned with intricate woven borders and is a key part of the traditional attire of Lahauli women." },
+            { id: "A55", question: "The Bhuri Singh Museum, known for its Chamba Rumal collection, is in:", options: ["Kullu", "Mandi", "Shimla", "Chamba"], answer: "Chamba", isHard: true, topic: "History & Culture", hint: "The name of the museum is a big clue.", explanation: "The Bhuri Singh Museum, established in 1908, is located in the town of Chamba. It is renowned for its extensive collection of miniature paintings and the famous Chamba Rumals.", moreInfo: "The museum is named after Raja Bhuri Singh of Chamba, who donated his family's collection of paintings to the institution." }
         ];
 
-        // --- DOM ELEMENT CACHE ---
         const elements = {
             screens: {
                 welcome: document.getElementById('welcome-screen'),
@@ -810,7 +837,7 @@
             resultsButtonsArea: document.getElementById('results-buttons-area'),
             modalOverlay: document.getElementById('modal-overlay'),
             modalContent: document.getElementById('modal-content'),
-            geminiFactText: document.getElementById('gemini-fact-text'),
+            factText: document.getElementById('fact-text'),
             toast: document.getElementById('toast'),
             mascot: {
                 container: document.getElementById('mascot'),
@@ -822,13 +849,11 @@
             docElement: document.documentElement
         };
 
-        // --- STATE & HELPERS ---
         let state = {};
         let activeModalClose = null;
         let sounds = {};
         const shuffleArray = (arr) => [...arr].sort(() => 0.5 - Math.random());
         
-        // --- SOUND SETUP ---
         function setupSounds() {
             try {
                 sounds.click = new Tone.PluckSynth({attackNoise: 0.1, dampening: 4000, resonance: 0.7}).toDestination();
@@ -865,11 +890,10 @@
             }
         }
         
-        // --- BUILT-IN CONTENT FUNCTIONS ---
         function fetchFactOfTheDay() {
             const fact = FACTS_OF_THE_DAY[Math.floor(Math.random() * FACTS_OF_THE_DAY.length)];
-            if(elements.geminiFactText) {
-                elements.geminiFactText.textContent = fact;
+            if(elements.factText) {
+                elements.factText.textContent = fact;
             }
         }
         
@@ -909,16 +933,21 @@
             showModal(`<h2>✨ Review Summary</h2><div class="scrollable-content"><div class="study-guide">${finalHTML}</div></div>`);
         }
 
-        // --- UI & FEEDBACK ---
         function setupScrollIndicators() {
             document.querySelectorAll('.scrollable-content').forEach(el => {
                 const indicator = el.parentElement.querySelector('.scroll-indicator');
                 if (indicator) {
-                    // Reset on new content
                     indicator.classList.remove('scrolled');
-                    el.addEventListener('scroll', () => {
-                        indicator.classList.add('scrolled');
-                    }, { once: true });
+                    const handleScroll = () => {
+                        if (el.scrollTop > 10) {
+                           indicator.classList.add('scrolled');
+                        } else {
+                           indicator.classList.remove('scrolled');
+                        }
+                    };
+                    el.removeEventListener('scroll', handleScroll); // Remove previous listener
+                    el.addEventListener('scroll', handleScroll);
+                    handleScroll(); // Initial check
                 }
             });
         }
@@ -994,6 +1023,7 @@
             
             elements.mascot.message.textContent = message || messages[Math.floor(Math.random() * messages.length)];
             
+            elements.mascot.container.classList.remove('hide');
             elements.mascot.container.style.animation = 'none';
             void elements.mascot.container.offsetWidth;
             elements.mascot.container.style.animation = '';
@@ -1010,18 +1040,20 @@
 
             mascotTimeout = setTimeout(() => {
                 elements.mascot.container.classList.remove('show-message');
+                elements.mascot.container.classList.add('hide');
                 setTimeout(() => {
-                    elements.mascot.container.classList.remove('show');
-                }, 800);
+                    elements.mascot.container.classList.remove('show', 'hide');
+                }, 600);
             }, 3000);
         }
 
-        function showWelcomeMascot() {
+        function showWelcomeMascot(greeting) {
             if (state.settings.reduceMotion) return;
-            const welcomeMessages = ["Ready for a challenge?", "Welcome! Let's play!", "Hello! Let's begin.", "Time for a quiz!"];
             clearTimeout(mascotTimeout); 
+            elements.mascot.container.classList.remove('hide');
             elements.mascot.container.style.animation = '';
-            elements.mascot.message.textContent = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
+            const timeString = new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true });
+            elements.mascot.message.textContent = `${timeString} - ${greeting}`;
             elements.mascot.mouth.setAttribute('d', 'M48 35 C 49 36, 51 36, 52 35');
             elements.mascot.container.classList.add('show');
             setTimeout(() => {
@@ -1030,6 +1062,10 @@
 
             mascotTimeout = setTimeout(() => {
                 elements.mascot.container.classList.remove('show-message');
+                elements.mascot.container.classList.add('hide');
+                setTimeout(() => {
+                    elements.mascot.container.classList.remove('show', 'hide');
+                }, 600);
             }, 5000);
         }
         
@@ -1051,29 +1087,29 @@
             stars.style.opacity = '0';
 
             switch(timeOfDay) {
-                case 'morning':
-                    skyStop1.setAttribute('stop-color', '#87CEEB');
-                    skyStop2.setAttribute('stop-color', '#f0e68c');
-                    sunMoon.setAttribute('cy', '35');
-                    sunMoon.setAttribute('fill', '#FFD700');
+                case 'morning': // 5am - 12pm: Sunrise
+                    skyStop1.setAttribute('stop-color', '#4A6E8A'); // Dusky Blue
+                    skyStop2.setAttribute('stop-color', '#FFC371'); // Light Orange
+                    sunMoon.setAttribute('cy', '45');
+                    sunMoon.setAttribute('fill', '#FFD700'); // Gold sun
                     break;
-                case 'afternoon':
-                    skyStop1.setAttribute('stop-color', '#007aff');
-                    skyStop2.setAttribute('stop-color', '#87CEEB');
+                case 'afternoon': // 12pm - 5pm: Midday
+                    skyStop1.setAttribute('stop-color', '#3498db'); // Bright Blue
+                    skyStop2.setAttribute('stop-color', '#87CEEB'); // Sky Blue
                     sunMoon.setAttribute('cy', '20');
-                    sunMoon.setAttribute('fill', '#FFFF00');
+                    sunMoon.setAttribute('fill', '#FFFF00'); // Yellow sun
                     break;
-                case 'evening':
-                    skyStop1.setAttribute('stop-color', '#483D8B');
-                    skyStop2.setAttribute('stop-color', '#FF6347');
+                case 'evening': // 5pm - 8pm: Sunset
+                    skyStop1.setAttribute('stop-color', '#2c1e3e'); // Dark Purple
+                    skyStop2.setAttribute('stop-color', '#d96459'); // Terracotta Red
                     sunMoon.setAttribute('cy', '40');
-                    sunMoon.setAttribute('fill', '#FFA500');
+                    sunMoon.setAttribute('fill', '#f39c12'); // Orange sun
                     break;
-                case 'night':
-                    skyStop1.setAttribute('stop-color', '#000033');
-                    skyStop2.setAttribute('stop-color', '#1c1d23');
+                case 'night': // 8pm - 5am: Night
+                    skyStop1.setAttribute('stop-color', '#0d1b2a'); // Very Dark Blue
+                    skyStop2.setAttribute('stop-color', '#1b263b'); // Dark Blue Grey
                     sunMoon.setAttribute('cy', '25');
-                    sunMoon.setAttribute('fill', '#F5F5F7');
+                    sunMoon.setAttribute('fill', '#F5F5F7'); // White (Moon)
                     stars.style.opacity = '1';
                     break;
             }
@@ -1086,25 +1122,43 @@
             if (hour >= 5 && hour < 12) {
                 greeting = "Good Morning!";
                 timeOfDay = 'morning';
-            } else if (hour >= 12 && hour < 18) {
+            } else if (hour >= 12 && hour < 17) {
                 greeting = "Good Afternoon!";
                 timeOfDay = 'afternoon';
-            } else if (hour >= 18 && hour < 21) {
+            } else if (hour >= 17 && hour < 20) {
                 greeting = "Good Evening!";
                 timeOfDay = 'evening';
             } else {
-                greeting = "Good Night!";
+                greeting = "Hope you are having a great night!";
                 timeOfDay = 'night';
             }
             
             const greetingEl = document.getElementById('dynamic-greeting');
-            if (greetingEl) {
-                greetingEl.textContent = greeting;
-            }
+            if (greetingEl) greetingEl.textContent = greeting;
             updateHeroImage(timeOfDay);
+            return greeting;
         }
 
-        // --- CORE GAME LOGIC ---
+        function getSeenQuestions() {
+            try {
+                return JSON.parse(localStorage.getItem('seenQuestions')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function updateSeenQuestions() {
+            if (!state.userAnswers || state.userAnswers.length === 0) return;
+            const seenIds = getSeenQuestions();
+            const newIds = state.userAnswers.map(q => q.id);
+            const combined = [...new Set([...seenIds, ...newIds])];
+            try {
+                localStorage.setItem('seenQuestions', JSON.stringify(combined));
+            } catch (e) {
+                console.error("Could not save seen questions", e);
+            }
+        }
+
         function initializeState() {
             let settings = { largeText: false, theme: 'auto', reduceMotion: false, soundEnabled: true };
             try {
@@ -1132,7 +1186,7 @@
 
         async function startGame() {
             clearTimeout(mascotTimeout);
-            elements.mascot.container.classList.remove('show');
+            elements.mascot.container.classList.remove('show', 'hide');
             
             initializeState();
             prepareQuestions();
@@ -1150,21 +1204,33 @@
             initializeState();
             applySettings();
             displayLeaderboard(elements.leaderboardArea, true);
-            showWelcomeMascot();
-            setDynamicGreeting();
-            fetchFactOfTheDay(); // Fetch new fact from built-in list
+            const greeting = setDynamicGreeting();
+            showWelcomeMascot(greeting);
+            fetchFactOfTheDay();
             setupScrollIndicators();
         }
 
         function prepareQuestions() {
-            const allQuestionsShuffled = shuffleArray(ALL_QUESTIONS);
-            const specialQuestion = shuffleArray(BUILT_IN_SPECIAL_QUESTIONS)[0];
+            const allAvailableQuestions = [...ALL_QUESTIONS, ...BUILT_IN_SPECIAL_QUESTIONS];
+            const seenIds = new Set(getSeenQuestions());
+
+            const newPool = allAvailableQuestions.filter(q => !seenIds.has(q.id));
+            const seenPool = allAvailableQuestions.filter(q => seenIds.has(q.id));
+
+            let newCount = Math.ceil(TOTAL_QUESTIONS_PER_ROUND * 0.8);
+            let seenCount = TOTAL_QUESTIONS_PER_ROUND - newCount;
+
+            let finalQuestions = [];
+            finalQuestions.push(...shuffleArray(newPool).slice(0, newCount));
+            finalQuestions.push(...shuffleArray(seenPool).slice(0, seenCount));
             
-            // Take questions from the main pool and add 1 special question
-            const gameQuestions = allQuestionsShuffled.slice(0, TOTAL_QUESTIONS_PER_ROUND - 1);
-            gameQuestions.push(specialQuestion);
-            
-            state.gameQuestions = shuffleArray(gameQuestions);
+            if (finalQuestions.length < TOTAL_QUESTIONS_PER_ROUND) {
+                const remainingNeeded = TOTAL_QUESTIONS_PER_ROUND - finalQuestions.length;
+                const remainingPool = allAvailableQuestions.filter(q => !finalQuestions.some(fq => fq.id === q.id));
+                finalQuestions.push(...shuffleArray(remainingPool).slice(0, remainingNeeded));
+            }
+
+            state.gameQuestions = shuffleArray(finalQuestions.slice(0, TOTAL_QUESTIONS_PER_ROUND));
         }
         
         function loadNextQuestion() {
@@ -1223,10 +1289,12 @@
                 elements.options.appendChild(btn);
             });
             
-            setTimeout(() => {
-                elements.hintBtn.style.display = q.hint ? 'inline-flex' : 'none';
-                if(!state.powerupUsed) elements.powerup5050Btn.style.display = 'inline-flex';
-            }, 3000);
+            elements.hintBtn.style.display = q.hint ? 'inline-flex' : 'none';
+            if(!state.powerupUsed) {
+                elements.powerup5050Btn.style.display = 'inline-flex';
+            } else {
+                elements.powerup5050Btn.style.display = 'none';
+            }
             
             clearInterval(state.questionTimer);
             if (q.isHard) {
@@ -1252,7 +1320,7 @@
             state.userAnswers.push({
                 ...q,
                 userAnswer: selectedOption,
-                options: state.gameQuestions[state.questionIndex].shuffledOptions // Save the order they saw
+                options: state.gameQuestions[state.questionIndex].shuffledOptions
             });
 
             Array.from(elements.options.children).forEach(btn => {
@@ -1307,6 +1375,7 @@
         }
 
         function showResults() {
+            updateSeenQuestions();
             switchScreen('results');
             
             const animatedElements = [elements.medalDisplay, elements.finalBadge, elements.scoreDisplayArea, elements.saveScoreContainer, elements.resultsLeaderboardArea, elements.resultsButtonsArea];
@@ -1374,7 +1443,6 @@
             }, stepTime);
         }
 
-        // --- MODAL & SETTINGS ---
         function showModal(contentHTML) {
             if (activeModalClose) activeModalClose(true);
             elements.docElement.classList.add('modal-open');
@@ -1392,6 +1460,7 @@
             activeModalClose = closeModal;
             document.addEventListener('keydown', keydownHandler);
             elements.modalContent.querySelector('.modal-close-btn').onclick = () => { playSound('click'); closeModal(); };
+            setupScrollIndicators();
         }
         
         function showAlert(messageHTML) {
@@ -1445,7 +1514,7 @@
         
         function applySettings() {
             const settings = state.settings || { theme: 'auto', largeText: false, reduceMotion: false, soundEnabled: true };
-            applyTheme(); // Use the dedicated theme function
+            applyTheme();
             elements.docElement.classList.toggle('large-text', settings.largeText);
             elements.body.classList.toggle('reduce-motion', settings.reduceMotion);
         }
@@ -1466,7 +1535,7 @@
                 
                 (ans.options || []).forEach(opt => {
                     let classes = 'review-option';
-                    if (opt === ans.answer) classes += ' correct-answer'; // Use 'answer' from the object
+                    if (opt === ans.answer) classes += ' correct-answer';
                     else if (opt === ans.userAnswer) classes += ' user-incorrect';
                     reviewHTML += `<span class="${classes}">${opt}</span>`;
                 });
@@ -1478,7 +1547,6 @@
             });
             reviewHTML += '</div></div><div class="scroll-indicator"></div>';
             showModal(reviewHTML);
-            setupScrollIndicators();
         }
 
         function showAboutModal() {
@@ -1502,25 +1570,34 @@
         
         function showProjectBackstoryModal() {
             const backstoryHTML = `
-                <h2>Project Backstory</h2>
-                <div class="scrollable-content"><div class="study-guide">
-                    <h4>The Spark 💡</h4>
-                    <p>As my final-year project for the Computer Club, I challenged myself to build a professional web application in just <b>72 hours</b>. The goal was to create an engaging quiz that was fast, beautiful, and worked on any device.</p>
-                    
-                    <h4>The Tech Stack 💻</h4>
-                    <p>I built this using pure <b>HTML, CSS, and JavaScript (ES6+)</b>, without any frameworks. This single-file architecture makes it incredibly fast and portable. All the animations are done with CSS for smooth performance.</p>
+                <h2>The Project Backstory</h2>
+                <div class="scrollable-content" style="text-align: left; font-size: 0.95rem; line-height: 1.7;">
+                    <div class="study-guide">
+                        <p>Hey there, I'm Saksham Negi. Thanks for being curious about how this quiz was built. This project was a personal challenge, and I'd love to share the story with you.</p>
+                        
+                        <h4>The Spark: The 72-Hour Challenge 💡</h4>
+                        <p>It all started as a self-imposed 72-hour coding challenge. The goal was to build a complete, polished web application from scratch. I chose a quiz about my home state, Himachal Pradesh, because I wanted to create something fun and educational.</p>
 
-                    <h4>AI Collaboration 🤖</h4>
-                    <p>To create a rich question bank under the deadline, I used Google's Gemini as a research assistant. I prompted it for topics and initial question drafts, but then <b>I personally fact-checked, edited, and curated every single piece of content</b> to ensure quality and accuracy for the final quiz.</p>
-                    
-                </div></div>
-                 <div class="scroll-indicator"></div>
+                        <h4>Why Vanilla JS? No Frameworks? 💻</h4>
+                        <p>As a developer, I believe it's crucial to have a strong foundation. I deliberately avoided frameworks like React or Angular to prove that you can build a fast, modern, and interactive UI with just plain old HTML, CSS, and JavaScript. This approach forced me to work directly with the DOM, manage the application state manually, and deeply understand browser performance. The result is a lightweight, single-file application that's incredibly fast and easy to deploy on platforms like Vercel.</p>
+
+                        <h4>The Design and UI ✨</h4>
+                        <p>The aesthetic was a big focus. I spent the first day crafting the UI, drawing inspiration from glassmorphism. The frosted glass container, glowing borders, and the aurora background (made with animated CSS radial gradients) were all created from scratch. The little robot mascot was an SVG I designed to give the app some personality.</p>
+                        
+                        <h4>How I Used Gemini (Sparingly) 🤖</h4>
+                        <p>With the 72-hour clock ticking, building a quality question bank was the biggest hurdle. This is where I used Google's Gemini as a research assistant, not a content generator. I prompted it for specific, verifiable facts on niche topics, like "Key features of Kath-Kuni architecture" or "list of Viceroys who resided in Shimla." Gemini provided the raw data, but I personally fact-checked every single point and then handcrafted each question, its incorrect options, and the detailed "Did you know?" sections. This ensured the content was accurate and engaging.</p>
+
+                        <h4>Technical Hurdles and Wins 🏆</h4>
+                        <p>Managing the quiz state (current question, score, streak) in vanilla JS was a fun puzzle. I settled on a single global 'state' object, which kept everything predictable. The "smart" question selection that mixes new and old questions uses \`localStorage\` to remember what you've seen, adding replay value. The biggest technical win was creating a smooth, bug-free experience without the safety net of a framework.</p>
+
+                        <p style="margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">Copyright © 2025 Saksham Negi. All Rights Reserved.</p>
+                    </div>
+                </div>
+                <div class="scroll-indicator"></div>
             `;
             showModal(backstoryHTML);
-            setupScrollIndicators();
         }
 
-        // --- LEADERBOARD & ADMIN ---
         function displayLeaderboard(target, showTopScore) {
             if(!target) return;
             let leaderboard = [];
@@ -1594,7 +1671,7 @@
         function showConfirmation(message) {
           return new Promise(resolve => {
               showModal(`<h2>Are you sure?</h2><div class="scrollable-content"><p>${message}</p><div class="modal-buttons"><button id="confirm-yes-btn" class="danger-btn">Yes, I'm sure</button><button id="confirm-no-btn" class="secondary-btn">Cancel</button></div></div>`);
-              document.getElementById('confirm-yes-btn').onclick = () => { playSound('click', 'C3'); if(activeModalClose) activeModalClose(true); resolve(true); };
+              document.getElementById('confirm-yes-btn').onclick = () => { playSound('click'); if(activeModalClose) activeModalClose(true); resolve(true); };
               document.getElementById('confirm-no-btn').onclick = () => { playSound('click'); if(activeModalClose) activeModalClose(true); resolve(false); };
           });
         }
@@ -1621,7 +1698,7 @@
             showModal(managerHTML + '</div>');
             document.querySelectorAll('.delete-score-btn').forEach(btn => {
                 btn.onclick = (e) => {
-                    playSound('click', 'C3');
+                    playSound('click');
                     const i = parseInt(e.target.closest('button').dataset.index, 10);
                     leaderboard.splice(i, 1);
                     localStorage.setItem('himachalQuizLeaderboard', JSON.stringify(leaderboard));
@@ -1666,13 +1743,13 @@
                 try {
                     localStorage.removeItem('himachalQuizLeaderboard');
                     localStorage.removeItem('quizSettings');
+                    localStorage.removeItem('seenQuestions');
                     await showAlert(`<h2>Reset Complete</h2><p>All quiz data has been deleted. The application will now reload.</p>`);
                     setTimeout(() => window.location.reload(), 2000);
                 } catch(e) { await showAlert(`<h2>Error</h2><p>An error occurred while clearing data.</p>`); }
             }
         }
         
-        // --- BIND EVENTS & INITIALIZE ---
         function bindEvents() {
             const playClick = () => {
                 playSound('click');
@@ -1690,7 +1767,6 @@
             elements.powerup5050Btn.addEventListener('click', () => { playClick(); useFiftyFifty(); });
         }
         
-        // Initial App Load / Audio Initializer
         function initAudioOnFirstInteraction() {
             if (Tone.context.state !== 'running') {
                 Tone.context.resume();
@@ -1704,9 +1780,7 @@
         goHome();
         setupSounds();
         bindEvents();
-        // SCRIPT END - If you see this, the code is complete.
     });
   </script>
 </body>
 </html>
-
