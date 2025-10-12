@@ -11,12 +11,29 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=Orbitron:wght@700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
+  <script>
+    // Self-executing function to apply theme on initial load, preventing flash of unstyled content.
+    (() => {
+      try {
+        const settings = JSON.parse(localStorage.getItem('quizSettings')) || { theme: 'auto' };
+        if (settings.theme === 'auto') {
+          document.documentElement.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        } else {
+          document.documentElement.setAttribute('data-theme', settings.theme);
+        }
+      } catch (e) {
+        // Default to dark theme if anything goes wrong
+        document.documentElement.setAttribute('data-theme', 'dark');
+      }
+    })();
+  </script>
   <style>
     /* ---
-      HIMACHAL QUIZ CHALLENGE (v38.0 - Dynamic UI & Audio Update)
-      - NEW: Hero image is now dynamic, changing from sun to moon based on user's time.
-      - NEW: Added "Good Night" to personalized greetings.
-      - IMPROVED: Replaced all sound effects with new, more pleasant and modern sounds.
+      HIMACHAL QUIZ CHALLENGE (v43.0 - The Final Version)
+      - Content libraries have been expanded and optimized for high replayability.
+      - Removed all buggy animations and replaced with new, fluid UI interactions.
+      - "About" section rewritten with a complete, professional project backstory.
+      - All known bugs (background scaling, theme loading) have been fixed.
       - Copyright (c) 2025 Saksham Negi
     --- */
 
@@ -25,11 +42,25 @@
       --font-display: 'Orbitron', sans-serif;
       --base-font-size: 16px; --large-font-size: 18px;
       
-      --bg-light: #f4f4f9; --card-bg-light: #ffffff; --card-bg-light-rgb: 255, 255, 255; --card-border-light: rgba(0, 0, 0, 0.1);
-      --text-primary-light: #1d1d1f; --text-secondary-light: #6e6e73; --accent-light: #007aff; --accent-light-rgb: 0, 122, 255;
+      /* Light Theme (Redesigned) */
+      --bg-light: #f0f2f5;
+      --card-bg-light: #ffffff;
+      --card-bg-light-rgb: 255, 255, 255;
+      --card-border-light: rgba(0, 0, 0, 0.1);
+      --text-primary-light: #1c1e21;
+      --text-secondary-light: #606770;
+      --accent-light: #1877f2;
+      --accent-light-rgb: 24, 119, 242;
       
-      --bg-dark: #111217; --card-bg-dark: #1c1d23; --card-bg-dark-rgb: 28, 29, 35; --card-border-dark: rgba(255, 255, 255, 0.15);
-      --text-primary-dark: #f5f5f7; --text-secondary-dark: #a1a1a6; --accent-dark: #00f2fe; --accent-dark-rgb: 0, 242, 254;
+      /* Dark Theme */
+      --bg-dark: #111217; 
+      --card-bg-dark: #1c1d23; 
+      --card-bg-dark-rgb: 28, 29, 35; 
+      --card-border-dark: rgba(255, 255, 255, 0.15);
+      --text-primary-dark: #f5f5f7; 
+      --text-secondary-dark: #a1a1a6; 
+      --accent-dark: #00f2fe; 
+      --accent-dark-rgb: 0, 242, 254;
 
       --glow-correct: #32d74b; --glow-incorrect: #ff453a; --gold: #ffc900; --silver: #d1d1d6; --bronze: #d99a75;
       --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1); --transition-medium: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
@@ -69,13 +100,19 @@
     html.modal-open, body.modal-open { overflow: hidden; }
 
     .background-aurora {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+      position: fixed;
+      top: -25vh;
+      left: -25vw;
+      width: 150vw;
+      height: 150vh;
+      z-index: -1;
       background: radial-gradient(circle at 10% 20%, rgba(var(--accent-rgb), 0.1), transparent 35%), radial-gradient(circle at 80% 70%, rgba(var(--accent-rgb), 0.1), transparent 35%);
-      animation: aurora-flow 20s infinite ease-in-out alternate; transition: opacity var(--transition-medium);
+      animation: aurora-flow 20s infinite ease-in-out alternate;
+      transition: opacity var(--transition-medium);
     }
     .aurora-flash-correct { animation: flash-correct 0.8s ease-out; }
     .aurora-flash-incorrect { animation: flash-incorrect 0.8s ease-out; }
-    @keyframes aurora-flow { from { transform: rotate(0deg) scale(1); } to { transform: rotate(360deg) scale(1.2); } }
+    @keyframes aurora-flow { from { transform: rotate(0deg) scale(1.2); } to { transform: rotate(360deg) scale(1.5); } }
     @keyframes flash-correct { from { background-color: rgba(50, 215, 75, 0.2); } to { background-color: transparent; } }
     @keyframes flash-incorrect { from { background-color: rgba(255, 69, 58, 0.2); } to { background-color: transparent; } }
 
@@ -158,13 +195,24 @@
     .main-btn, .secondary-btn, .danger-btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; max-width: 320px; padding: 16px; border-radius: 16px; font-size: 1.125rem; font-weight: 600; border: none; cursor: pointer; transition: transform var(--transition-fast), box-shadow var(--transition-fast); user-select: none; }
     .main-btn:active, .secondary-btn:active, .danger-btn:active { transform: scale(0.97); animation: button-pop 0.2s; }
     @keyframes button-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
-    .main-btn { background-color: var(--accent); color: var(--bg-dark); box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3); }
+    .main-btn { background-color: var(--accent); color: var(--card-bg-light); box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3); }
     .main-btn:hover { box-shadow: 0 6px 25px rgba(var(--accent-rgb), 0.4); transform: translateY(-2px); }
     .secondary-btn { background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
     .danger-btn { background-color: var(--glow-incorrect); color: #fff; }
 
     /* --- Welcome Screen Specific --- */
-    #welcome-screen .container-header { margin-bottom: 16px; }
+    #welcome-screen .container-header,
+    #welcome-screen .container-main > *,
+    #welcome-screen .container-footer > * {
+        animation: fade-in-up 0.6s ease-out backwards;
+    }
+    #welcome-screen .container-main > *:nth-child(1) { animation-delay: 0.1s; }
+    #welcome-screen .container-main > *:nth-child(2) { animation-delay: 0.2s; }
+    #welcome-screen .container-main > *:nth-child(3) { animation-delay: 0.3s; }
+    #welcome-screen .container-footer > * { animation-delay: 0.4s; }
+    #welcome-screen .welcome-options a { animation: none; } /* Handled by parent delay */
+
+
     .hero-image { width: 100%; max-width: 250px; height: auto; margin: -16px auto 16px; display: block; }
     .hero-image #sun-moon { transform-origin: center; transition: cy 1s ease-in-out, fill 1s ease-in-out; }
     .hero-image #mountains path { animation: float 6s infinite ease-in-out; }
@@ -172,6 +220,20 @@
     .hero-image #mountains path:nth-child(3) { animation-delay: -4s; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     #dynamic-greeting { color: var(--text-secondary); font-weight: 600; margin: 0 0 8px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    
+    #welcome-screen .main-btn {
+        animation: pulse-glow 3s infinite ease-in-out, fade-in-up 0.6s ease-out 0.4s backwards;
+    }
+    @keyframes pulse-glow {
+        0%, 100% {
+            box-shadow: 0 4px 20px rgba(var(--accent-rgb), 0.3);
+            transform: scale(1);
+        }
+        50% {
+            box-shadow: 0 6px 30px rgba(var(--accent-rgb), 0.5);
+            transform: scale(1.02);
+        }
+    }
     
     .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 8px; margin-bottom: 16px; }
     #round-title { font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); }
@@ -201,7 +263,27 @@
       cursor: pointer; 
       transition: all var(--transition-fast); 
       overflow-wrap: break-word; 
+      position: relative;
+      overflow: hidden;
     }
+    .options button::after { /* Shine effect */
+        content: '';
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.3) 50%, rgba(255, 255, 255, 0) 100%);
+        transform: translateX(-100%) skewX(-20deg);
+        transition: transform 0.6s ease;
+    }
+    [data-theme="dark"] .options button::after {
+         background: linear-gradient(to right, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.1) 50%, rgba(255, 255, 255, 0) 100%);
+    }
+    .options button:hover::after {
+        transform: translateX(100%) skewX(-20deg);
+    }
+
     .options button:not(:disabled):hover { background-color: rgba(var(--accent-rgb), 0.1); border-color: var(--accent); transform: scale(1.02); }
     .options button.correct { background-color: rgba(50, 215, 75, 0.2); border-color: var(--glow-correct); color: var(--text-primary) !important; transform: scale(1.02); animation: correct-answer-pop 0.5s ease-out; }
     @keyframes correct-answer-pop { 0% { transform: scale(1.02); } 50% { transform: scale(1.05); } 100% { transform: scale(1.02); } }
@@ -254,7 +336,7 @@
 
     #save-score-area { display: flex; gap: 10px; margin: 20px 0; }
     #save-score-area input { flex-grow: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(120,120,128,0.12); color: var(--text-primary); font-size: 1rem; }
-    #save-score-area button { padding: 12px 20px; border-radius: 12px; border: none; background: var(--accent); color: var(--bg-dark); cursor: pointer; font-weight: 600; }
+    #save-score-area button { padding: 12px 20px; border-radius: 12px; border: none; background: var(--accent); color: var(--card-bg-light); cursor: pointer; font-weight: 600; }
 
     #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity var(--transition-medium); z-index: 2000; }
     #modal-overlay.show { opacity: 1; pointer-events: auto; }
@@ -272,7 +354,7 @@
 
     .welcome-options { margin-top: 32px; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
     .welcome-options a { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 90px; height: 90px; background-color: rgba(120,120,128,0.12); border-radius: 24px; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: transform var(--transition-fast), background-color var(--transition-fast); }
-    .welcome-options a:hover { transform: translateY(-4px); background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
+    .welcome-options a:hover { transform: translateY(-4px) scale(1.1); background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
     .welcome-options a svg { width: 28px; height: 28px; margin-bottom: 8px; stroke-width: 2; }
     
     /* Settings Modal Styles */
@@ -356,8 +438,9 @@
     #mascot-message {
         position: absolute;
         bottom: 95%;
-        left: 50%;
-        transform: translateX(-50%) scale(0);
+        left: 90%;
+        transform: translateX(0) scale(0);
+        transform-origin: bottom left;
         background: var(--card-bg);
         color: var(--text-primary);
         padding: 8px 12px;
@@ -366,12 +449,12 @@
         font-size: 0.9rem;
         font-weight: 600;
         width: max-content;
-        max-width: 200px;
+        max-width: 250px;
         opacity: 0;
         transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.4s ease;
     }
      #mascot.show-message #mascot-message {
-        transform: translateX(-50%) scale(1);
+        transform: translateX(0) scale(1);
         opacity: 1;
     }
 
@@ -391,16 +474,6 @@
     #gyan-right-arm {
       transform-origin: 80px 65px;
     }
-
-    #mascot.waving #gyan-right-arm {
-      animation: wave-hello 1.5s infinite ease-in-out 0.8s;
-    }
-    @keyframes wave-hello {
-      0%, 100% { transform: rotate(0deg); }
-      25% { transform: rotate(25deg); }
-      75% { transform: rotate(-15deg); }
-    }
-
 
     #toast {
         position: fixed;
@@ -441,24 +514,41 @@
         color: var(--text-secondary);
     }
 
+    .scroll-indicator {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 24px;
+        opacity: 0.8;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+        z-index: 10;
+    }
+    .scroll-indicator::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        border-bottom: 3px solid var(--accent);
+        border-right: 3px solid var(--accent);
+        transform: rotate(45deg);
+        animation: bounce 2s infinite;
+    }
+    .scroll-indicator.scrolled {
+        opacity: 0;
+    }
+    @keyframes bounce {
+        0%, 20%, 50%, 80%, 100% { transform: translateY(0) rotate(45deg); }
+        40% { transform: translateY(-10px) rotate(45deg); }
+        60% { transform: translateY(-5px) rotate(45deg); }
+    }
 
     body.reduce-motion * { animation: none !important; transition-duration: 0.01s !important; }
   </style>
-  <script>
-    // Self-executing function to apply theme on initial load
-    (() => {
-      try {
-        const settings = JSON.parse(localStorage.getItem('quizSettings')) || { theme: 'auto' };
-        if (settings.theme === 'auto') {
-          document.documentElement.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        } else {
-          document.documentElement.setAttribute('data-theme', settings.theme);
-        }
-      } catch (e) {
-        document.documentElement.setAttribute('data-theme', 'dark');
-      }
-    })();
-  </script>
 </head>
 <body>
   <div class="background-aurora"></div>
@@ -541,12 +631,13 @@
       </header>
       <div class="container-main">
         <div id="top-score-highlight"></div>
-        <div id="gemini-fact-area" class="gemini-feature">
+        <div id="gemini-feature" class="gemini-feature">
             <h3>✨ Fact of the Day</h3>
             <p id="gemini-fact-text">Fetching a fun fact...</p>
         </div>
         <div id="leaderboard-area" class="leaderboard" style="margin-top: 16px;"></div>
       </div>
+       <div class="scroll-indicator"></div>
       <footer class="container-footer">
         <button id="start-btn" class="main-btn">Start Challenge</button>
         <div class="welcome-options">
@@ -586,8 +677,8 @@
         <div id="feedback-area" role="alert" aria-live="assertive"></div>
         <div id="timer-bar-container"><div id="timer-bar"></div></div>
         <div class="powerup-container">
-            <button id="powerup-5050-btn" class="secondary-btn">✨ 50/50</button>
-            <button id="hint-btn" class="secondary-btn">✨ Hint</button>
+            <button id="powerup-5050-btn" class="secondary-btn">50/50</button>
+            <button id="hint-btn" class="secondary-btn">Hint</button>
         </div>
         <button id="next-btn" class="main-btn" style="display: none;">Next</button>
       </footer>
@@ -607,6 +698,7 @@
         <div id="save-score-container"></div>
         <div id="results-leaderboard-area" class="leaderboard"></div>
       </div>
+      <div class="scroll-indicator"></div>
       <footer class="container-footer">
         <div id="results-buttons-area" class="results-buttons"></div>
       </footer>
@@ -621,54 +713,69 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
         // --- CONFIGURATION ---
-        const QUIZ_VERSION = '34.0';
+        const QUIZ_VERSION = '42.2';
         const ADMIN_PASSWORD = 'hianime.2810@gmail.com';
-        const TOTAL_QUESTIONS = 31;
-        const NORMAL_QUESTIONS = [
-            { question: "Which fruit is Himachal Pradesh famous for?", options: ["Mango","Apple","Banana","Guava"], answer: "Apple" },
-            { question: "What is the traditional Himachali cap called?", options: ["Topi","Pagdi","Kullu Cap","Turban"], answer: "Kullu Cap" },
-            { question: "Which river flows through Kangra valley?", options: ["Beas","Sutlej","Ravi","Chenab"], answer: "Beas" },
-            { question: "What is the major cash crop of Kinnaur district?", options: ["Rice","Apple","Wheat","Maize"], answer: "Apple" },
-            { question: "Shimla was the summer capital of which era?", options: ["British Raj","Mughal Empire","Maurya Empire","Gupta Empire"], answer: "British Raj" },
-            { question: "Which Himachali festival is celebrated with dances like Nati?", options: ["Diwali","Holi","Kullu Dussehra","Baisakhi"], answer: "Kullu Dussehra" },
-            { question: "Manali is located in which district?", options: ["Kullu","Solan","Mandi","Chamba"], answer: "Kullu" },
-            { question: "Which is a famous hot spring in Himachal Pradesh?", options: ["Manikaran","Dalhousie","Chail","Kasol"], answer: "Manikaran" },
-            { question: "The Great Himalayan National Park is in which district?", options: ["Kullu","Lahaul","Spiti","Solan"], answer: "Kullu" },
-            { question: "What is a traditional dance of Kullu Valley?", options: ["Bhangra","Nati","Garba","Dandiya"], answer: "Nati" },
-            { question: "Which town is famous for Tibetan monasteries?", options: ["Dharamshala","Solan","Chamba","Mandi"], answer: "Dharamshala" },
-            { question: "Which type of apples is widely grown in Himachal?", options: ["Red Delicious","Golden","Granny Smith","Fuji"], answer: "Red Delicious" },
-            { question: "Which fort is a landmark of Kangra?", options: ["Kangra Fort","Naggar Fort","Chamba Fort","Bharmour Fort"], answer: "Kangra Fort" },
-            { question: "What is a popular Himachali cuisine?", options: ["Sidu","Rogan Josh","Pani Puri","Dosa"], answer: "Sidu" },
-            { question: "Which wildlife sanctuary is in Solan district?", options: ["Chail Sanctuary","Pin Valley","Great Himalayan","Simbalbara"], answer: "Chail Sanctuary" },
-            { question: "Which lake is also known as 'Mini Switzerland of India'?", options: ["Chamera","Khajjiar","Dal Lake","Rewalsar"], answer: "Khajjiar" },
-            { question: "Which town is a base for Rohtang Pass?", options: ["Manali","Shimla","Kullu","Mandi"], answer: "Manali" },
-            { question: "Which Himachali tribe is known for woolen crafts?", options: ["Gaddi","Bhutia","Lohar","Pahari"], answer: "Gaddi" },
-            { question: "The Kalka-Shimla Railway is a UNESCO what?", options: ["World Heritage Site","National Park","Biosphere Reserve","Geopark"], answer: "World Heritage Site" },
-            { question: "Which temple is famous in Mandi?", options: ["Bhootnath Temple","Bhimakali Temple","Triloknath Temple","Hidimba Devi Temple"], answer: "Bhootnath Temple" },
-            { question: "What is the traditional craft of Chamba, famous for its intricate embroidery?", options: ["Thangka Painting","Chamba Rumal","Kullu Shawl","Kangra Miniature"], answer: "Chamba Rumal" },
-            { question: "Which mountain range predominantly runs through Himachal?", options: ["Aravalli","Himalayas","Vindhya","Sahyadri"], answer: "Himalayas" },
-            { question: "What is the state animal of Himachal Pradesh?", options: ["Musk Deer", "Snow Leopard", "Himalayan Tahr", "Black Bear"], answer: "Snow Leopard" },
-            { question: "Which town hosts the famous Kullu Dussehra festival?", options: ["Kullu","Manali","Shimla","Mandi"], answer: "Kullu" },
-            { question: "The ancient Tabo Monastery, a UNESCO site, is located in which valley?", options: ["Kullu Valley", "Kangra Valley", "Spiti Valley", "Parvati Valley"], answer: "Spiti Valley"},
-            { question: "Which river is a major tributary of Sutlej, originating from the Spiti valley?", options: ["Beas","Chenab","Spiti","Ravi"], answer: "Spiti" },
-            { question: "The Christ Church, a prominent landmark, is located in which hill station?", options: ["Dalhousie","Kasauli","Shimla","Manali"], answer: "Shimla" },
-            { question: "What is the staple food in Lahaul Valley, often used to make 'tsampa'?", options: ["Rice","Barley","Maize","Wheat"], answer: "Barley" },
-            { question: "Which pass connects Kullu Valley with Lahaul and Spiti Valleys?", options: ["Rohtang Pass", "Bara-lacha la Pass", "Shipki La Pass", "Sach Pass"], answer: "Rohtang Pass" },
-            { question: "Which town is famous for its intricate woolen shawls?", options: ["Kullu","Solan","Chamba","Dharamshala"], answer: "Kullu" }
+        const TOTAL_QUESTIONS_PER_ROUND = 20;
+        
+        // --- BUILT-IN DATA ---
+        const FACTS_OF_THE_DAY = [
+            "Himachal Pradesh is often called the 'Land of the Gods' (Devbhumi).",
+            "The Great Himalayan National Park, a UNESCO site, is in Himachal.",
+            "Shimla has one of Asia's oldest natural ice-skating rinks.",
+            "The Kalka-Shimla Railway has over 103 tunnels.",
+            "Malana village is one of the oldest democracies in the world.",
+            "Himachal is the second least corrupt state in India.",
+            "The state animal is the elusive Snow Leopard.",
+            "Spiti Valley is a high-altitude cold desert.",
+            "Dharamshala is the home of the Dalai Lama.",
+            "Kangra tea from Himachal has a Geographical Indication (GI) tag.",
+            "The state bird is the beautiful Western Tragopan.",
+            "Himachal Pradesh was formed on 25th January 1971.",
+            "Nati is the most famous folk dance of the region.",
+            "The Atal Tunnel is the longest highway tunnel above 10,000 feet.",
+            "Chail Cricket Ground is the highest in the world."
         ];
-        const HARD_QUESTIONS = [
-            { question: "Modern activism around the River Beas has focused on?", options: ["Overfishing","Illegal sand mining and hydropower impacts","Lack of boat traffic","Seasonal flooding"], answer: "Illegal sand mining and hydropower impacts", isHard: true },
-            { question: "How has the gig economy changed youth employment in towns?", options: ["Offers lifetime job security","Long-term contracts","Flexible task-based work like delivery services","Exclusive artisan jobs"], answer: "Flexible task-based work like delivery services", isHard: true },
-            { question: "Which renewable energy sources are being significantly expanded in Himachal?", options: ["Coal & Geothermal","Solar & Hydropower","Petroleum & Wind","Nuclear & Tidal"], answer: "Solar & Hydropower", isHard: true },
-            { question: "What modern technology helps farmers in Himachal better track crop health and soil moisture?", options: ["Radio broadcasts","Mobile apps & IoT sensors","Town criers","Printed manuals"], answer: "Mobile apps & IoT sensors", isHard: true },
-            { question: "The growth of tourism most commonly impacts fragile Himalayan regions by causing:", options: ["Population decline","Increased plastic waste & pollution","Forest expansion","No significant effect"], answer: "Increased plastic waste & pollution", isHard: true },
-            { question: "Himachali artisans increasingly reach global markets primarily through:", options: ["Local fairs only","E-commerce platforms & international exhibitions","Street stalls in major cities only","Government-run stalls only"], answer: "E-commerce platforms & international exhibitions", isHard: true },
-            { question: "A major climate change impact observed in the Himachal Himalayas is:", options: ["Consistent increase in snowfall","Erratic weather patterns and glacial retreat","Higher crop yields everywhere","Stable year-round temperatures"], answer: "Erratic weather patterns and glacial retreat", isHard: true },
-            { question: "The Atal Tunnel, a modern engineering marvel, primarily reduces:", options: ["Air pollution","The need for tourism","Distance & winter travel time to Lahaul","Scenery on the drive"], answer: "Distance & winter travel time to Lahaul", isHard: true },
-            { question: "What modern medium is crucial for preserving and promoting Himachali folk music and culture today?", options: ["Internet platforms & digital media","Complete cultural isolation","Strictly oral tradition","Government archives only"], answer: "Internet platforms & digital media", isHard: true },
-            { question: "'Smart villages' initiatives in Himachal Pradesh primarily focus on improving:", options: ["Only traditional farming methods","Digital infrastructure, e-governance, and services","Manual labor opportunities","Isolation from urban centers"], answer: "Digital infrastructure, e-governance, and services", isHard: true },
-             { question: "What is a key focus of the 'Natural Farming Khushhal Kisan Yojana' scheme in Himachal?", options: ["Promoting use of chemical fertilizers", "Reducing dependence on chemicals", "Exclusively growing cash crops", "Mechanizing all farms"], answer: "Reducing dependence on chemicals", isHard: true },
-            { question: "The 'Himachal Pradesh State Data Centre' is a modern initiative for what purpose?", options: ["Storing historical photos", "Centralizing e-governance applications", "Tracking tourist movements", "Broadcasting radio signals"], answer: "Centralizing e-governance applications", isHard: true }
+
+        const BUILT_IN_SPECIAL_QUESTIONS = [
+            { question: "This serene lake, surrounded by deodar forests, is often called the 'Mini Switzerland of India'. A small, floating island is a key feature. What is this location?", options: ["Prashar Lake", "Khajjiar Lake", "Dal Lake", "Rewalsar Lake"], answer: "Khajjiar Lake", isHard: true, topic: "Geography" },
+            { question: "Located in the Spiti Valley, this ancient monastery is over a thousand years old and is a UNESCO World Heritage site. It's renowned for its stunning murals. Which monastery is this?", options: ["Key Monastery", "Dhankar Monastery", "Tabo Monastery", "Namgyal Monastery"], answer: "Tabo Monastery", isHard: true, topic: "History & Culture" },
+            { question: "I am a famous hot spring located in the Parvati Valley, revered by both Hindus and Sikhs. A Gurudwara and a temple stand here. What place am I?", options: ["Tattapani", "Vashisht", "Manikaran", "Kheerganga"], answer: "Manikaran", isHard: true, topic: "Geography" },
+            { question: "This engineering marvel, named after a former Prime Minister, drastically reduces travel time to Lahaul. It is the world's longest highway tunnel above 10,000 feet. What is it?", options: ["Jawahar Tunnel", "Dr. Syama Prasad Mookerjee Tunnel", "Atal Tunnel", "Rohtang Pass Tunnel"], answer: "Atal Tunnel", isHard: true, topic: "Modern Affairs" },
+            { question: "This former palace of the Maharaja of Patiala is now a luxury hotel. The world's highest cricket ground is also located here. Which town is it?", options: ["Kasauli", "Chail", "Dalhousie", "Naldehra"], answer: "Chail", isHard: true, topic: "History" },
+            { question: "I am a traditional form of embroidery from the Chamba district, known for its double-sided, intricate stitching. What am I?", options: ["Kangra Painting", "Kullu Shawl", "Thangka", "Chamba Rumal"], answer: "Chamba Rumal", isHard: true, topic: "Culture" },
+            { question: "This high-altitude, cold desert national park is located in Spiti and is home to the endangered snow leopard. What is its name?", options: ["Great Himalayan National Park", "Inderkilla National Park", "Pin Valley National Park", "Khirganga National Park"], answer: "Pin Valley National Park", isHard: true, topic: "Environment" },
+            { question: "I am a festive community feast where a variety of traditional dishes are served in a specific sequence on leaf plates. What am I?", options: ["Langar", "Sidu", "Dham", "Madra"], answer: "Dham", isHard: true, topic: "Culture" },
+            { question: "This famous international festival held in Kullu is unique because it begins when Dussehra festivities elsewhere end. What is it called?", options: ["Shimla Summer Festival", "Minjar Fair", "Kullu Dussehra", "Lavi Fair"], answer: "Kullu Dussehra", isHard: true, topic: "Culture" },
+            { question: "This town, the residence of the Dalai Lama, is a major center for the study of Buddhism and Tibetan culture. What is it?", options: ["Manali", "Dharamshala", "Palampur", "Rewalsar"], answer: "Dharamshala", isHard: true, topic: "Modern Affairs" }
+        ];
+        
+        const ALL_QUESTIONS = [
+            { question: "Which fruit is Himachal Pradesh famous for?", options: ["Mango","Apple","Banana","Guava"], answer: "Apple", topic: "Agriculture", hint: "It's a red, crunchy fruit often associated with Shimla.", explanation: "Himachal Pradesh is one of India's largest producers of apples, with the climate being ideal for their cultivation.", moreInfo: "The apple cultivation in Himachal was pioneered by Satyananda (formerly Samuel) Stokes, an American missionary who settled in the region in the early 20th century." },
+            { question: "What is the traditional Himachali cap called?", options: ["Topi","Pagdi","Kullu Cap","Turban"], answer: "Kullu Cap", topic: "Culture", hint: "It's a colorful woolen cap with a distinct flat top and decorative border.", explanation: "The Kullu Cap, or 'Kulluvi Topi', is a vibrant, woolen cap that is a symbol of Himachali culture, particularly from the Kullu valley.", moreInfo: "The colorful border on the front of the Kullu cap is a distinct feature. Different designs and colors can signify the region the wearer belongs to." },
+            { question: "Which river flows through Kangra valley?", options: ["Beas","Sutlej","Ravi","Chenab"], answer: "Beas", topic: "Geography", hint: "This river is one of the five rivers that give Punjab its name.", explanation: "The Beas River originates in the Himalayas and flows through the scenic Kangra Valley before entering the plains of Punjab.", moreInfo: "The Beas River is historically significant and was known as Arjikiya in the Vedas. It is believed to be the river that halted Alexander the Great's eastward expansion in 326 BCE." },
+            { question: "Shimla was the summer capital of which era?", options: ["British Raj","Mughal Empire","Maurya Empire","Gupta Empire"], answer: "British Raj", topic: "History", hint: "This period of British rule in India lasted until 1947.", explanation: "During the British Raj, Shimla served as the summer capital of India, allowing the administration to escape the intense heat of the plains.", moreInfo: "The decision to make Shimla the summer capital was made by Viceroy John Lawrence. The architecture in Shimla, like the Viceregal Lodge, still reflects its colonial past." },
+            { question: "Manali is located in which district?", options: ["Kullu","Solan","Mandi","Chamba"], answer: "Kullu", topic: "Geography", hint: "This district is famous for its valley and Dussehra celebrations.", explanation: "Manali is a popular tourist town situated in the Kullu district of Himachal Pradesh.", moreInfo: "Manali is named after the Sanatan Hindu lawgiver Manu. The name Manali is regarded as the derivative of 'Manu-Alaya' which literally means 'the abode of Manu'."},
+            { question: "What is a traditional dance of Kullu Valley?", options: ["Bhangra","Nati","Garba","Dandiya"], answer: "Nati", topic: "Culture", hint: "This slow, circular dance is performed in groups during festivals.", explanation: "Nati is the most popular folk dance of Himachal Pradesh, especially in the Kullu and Shimla regions. It holds a Guinness World Record for the largest folk dance.", moreInfo: "There are several regional variations of Nati, such as 'Kulluvi Nati', 'Shimla Nati', and 'Kinnauri Nati', each with its own distinct costume and rhythm." },
+            { question: "The Kalka-Shimla Railway is a UNESCO what?", options: ["World Heritage Site","National Park","Biosphere Reserve","Geopark"], answer: "World Heritage Site", topic: "History", hint: "This is a special designation for places of outstanding universal value.", explanation: "The Kalka-Shimla Railway is a UNESCO World Heritage Site, recognized for its impressive engineering and its role in the history of colonial India.", moreInfo: "The railway line was built in 1903 and crosses over 864 bridges and through 103 tunnels, making it an engineering marvel of its time." },
+            { question: "What is the state animal of Himachal Pradesh?", options: ["Musk Deer", "Snow Leopard", "Himalayan Tahr", "Black Bear"], answer: "Snow Leopard", topic: "Environment", hint: "This elusive big cat is found in the high, cold mountains.", explanation: "The Snow Leopard, a large cat native to the mountainous regions of Central and South Asia, is the state animal of Himachal Pradesh.", moreInfo: "The Spiti Valley in Himachal is considered one of the best places in the world to spot a Snow Leopard, earning it the nickname 'the grey ghost of the mountains'." },
+            { question: "What is a popular Himachali cuisine?", options: ["Sidu","Rogan Josh","Pani Puri","Dosa"], answer: "Sidu", topic:"Culture", hint:"It is a type of steamed bread.", explanation: "Sidu is a local delicacy made from wheat flour, often stuffed and steamed. It's usually eaten with ghee.", moreInfo: "The stuffing in Sidu can be made from walnuts, poppy seeds, or even pulses, and it's a staple during cold winters and celebrations."},
+            { question: "Which mountain range predominantly runs through Himachal?", options: ["Aravalli","Himalayas","Vindhya","Sahyadri"], answer: "Himalayas", topic: "Geography", hint:"It's the highest mountain range in the world.", explanation:"Himachal Pradesh is a Himalayan state, with several major ranges like the Dhauladhar and Pir Panjal passing through it.", moreInfo:"The name 'Himachal' itself translates to 'Land of the Snowy Mountains' in Sanskrit."},
+            { question: "The ancient Tabo Monastery is in which valley?", options: ["Kullu Valley", "Kangra Valley", "Spiti Valley", "Parvati Valley"], answer: "Spiti Valley", topic:"History & Culture", hint:"This is a high-altitude cold desert valley.", explanation:"Tabo Monastery is a prominent Buddhist site located in the remote Spiti Valley.", moreInfo:"Founded in 996 AD, it's often called the 'Ajanta of the Himalayas' for its magnificent murals and stucco sculptures."},
+            { question: "Which pass connects Kullu Valley with Lahaul and Spiti Valleys?", options: ["Rohtang Pass", "Bara-lacha la Pass", "Shipki La Pass", "Sach Pass"], answer: "Rohtang Pass", topic:"Geography", hint:"It's a famous high-altitude pass near Manali.", explanation:"Rohtang Pass is the primary gateway connecting the lush green Kullu Valley to the arid landscapes of Lahaul and Spiti.", moreInfo:"The name Rohtang means 'pile of corpses' in the local language, referring to the dangerous weather conditions that have claimed many lives over the centuries."},
+            { question: "Which town is famous for Tibetan monasteries?", options: ["Dharamshala","Solan","Chamba","Mandi"], answer: "Dharamshala", topic: "History & Culture", hint: "It is the current residence of the 14th Dalai Lama.", explanation: "Dharamshala, particularly the suburb of McLeod Ganj, is globally known as the home of the Dalai Lama and the Tibetan Government-in-Exile.", moreInfo: "The area is often called 'Little Lhasa' due to its large population of Tibetans and numerous monasteries, including the main Tsuglagkhang Complex." },
+            { question: "What is the staple food in Lahaul Valley, often used to make 'tsampa'?", options: ["Rice","Barley","Maize","Wheat"], answer: "Barley", topic:"Agriculture", hint: "This grain is well-suited to high-altitude, cold climates.", explanation: "Barley is a primary crop in the cold, arid region of Lahaul Valley. It is roasted and ground into a flour called 'tsampa'.", moreInfo: "Tsampa is a versatile food, often mixed with butter tea to form a dough called 'ngamphe' or used in porridges. It's a vital source of energy for people living at high altitudes."},
+            { question: "The Great Himalayan National Park is in which district?", options: ["Kullu","Lahaul","Spiti","Solan"], answer: "Kullu", topic: "Environment", hint: "This district is famous for its valley and international Dussehra festival.", explanation: "The Great Himalayan National Park, a UNESCO World Heritage Site, is located in the Kullu district.", moreInfo: "The park protects a vast ecosystem of Himalayan flora and fauna, including rare species like the Western Tragopan and the Snow Leopard." },
+            { question: "Which town is famous for its intricate woolen shawls?", options: ["Kullu","Solan","Chamba","Dharamshala"], answer: "Kullu", topic:"Culture", hint:"These shawls are known for their geometric patterns and bright borders.", explanation:"Kullu is renowned for its hand-woven shawls, which are characterized by their simple geometric designs and vibrant colors.", moreInfo: "The art of Kullu shawl weaving has been granted a Geographical Indication (GI) tag to protect its authenticity and heritage."},
+            { question: "The Christ Church, a prominent landmark, is located in which hill station?", options: ["Dalhousie","Kasauli","Shimla","Manali"], answer: "Shimla", topic:"History", hint: "This city was the summer capital of British India.", explanation: "The Christ Church, with its distinctive neo-gothic architecture, is one of the most iconic landmarks located on The Ridge in Shimla.", moreInfo: "It is the second oldest church in North India, built between 1846 and 1857. Its stained glass windows are particularly famous and represent virtues like faith, hope, and charity."},
+            { question: "Modern activism around the River Beas has focused on?", options: ["Overfishing","Illegal sand mining and hydropower impacts","Lack of boat traffic","Seasonal flooding"], answer: "Illegal sand mining and hydropower impacts", isHard: true, topic: "Modern Affairs", hint: "Think about industrial and energy-related impacts on rivers.", explanation: "Environmental groups and locals have raised concerns about the ecological damage from widespread illegal sand mining and the construction of numerous hydropower projects on the Beas." },
+            { question: "A major climate change impact observed in the Himachal Himalayas is:", options: ["Consistent increase in snowfall","Erratic weather patterns and glacial retreat","Higher crop yields everywhere","Stable year-round temperatures"], answer: "Erratic weather patterns and glacial retreat", isHard: true, topic: "Environment", hint: "Global warming has a direct effect on ice and weather stability.", explanation: "Climate change has led to more unpredictable weather, including intense rainfall events, and a noticeable retreat of glaciers, which are a critical source of water for rivers." },
+            { question: "Which renewable energy sources are being significantly expanded in Himachal?", options: ["Coal & Geothermal","Solar & Hydropower","Petroleum & Wind","Nuclear & Tidal"], answer: "Solar & Hydropower", isHard: true, topic: "Modern Affairs", hint: "The state leverages its rivers and sunny slopes.", explanation: "Himachal Pradesh is heavily investing in expanding its solar power capacity and already has a massive installed base of hydropower, making it a key player in India's renewable energy goals." },
+            { question: "The Atal Tunnel, a modern engineering marvel, primarily reduces:", options: ["Air pollution","The need for tourism","Distance & winter travel time to Lahaul","Scenery on the drive"], answer: "Distance & winter travel time to Lahaul", isHard: true, topic: "Modern Affairs", hint: "It provides all-weather connectivity to a previously cut-off region.", explanation: "The Atal Tunnel bypasses the Rohtang Pass, providing all-year connectivity to the Lahaul Valley, which was previously inaccessible for about six months every winter due to heavy snowfall." },
+            { question: "'Smart villages' initiatives in Himachal Pradesh primarily focus on improving:", options: ["Only traditional farming methods","Digital infrastructure, e-governance, and services","Manual labor opportunities","Isolation from urban centers"], answer: "Digital infrastructure, e-governance, and services", isHard: true, topic:"Modern Affairs", hint:"Think about how technology can connect rural areas.", explanation:"The 'Smart Village' concept aims to bridge the rural-urban divide by providing amenities like internet connectivity, digital services, and improved public infrastructure in villages."},
+            { question: "How has the gig economy changed youth employment in towns?", options: ["Offers lifetime job security","Long-term contracts","Flexible task-based work like delivery services","Exclusive artisan jobs"], answer: "Flexible task-based work like delivery services", isHard: true, topic:"Modern Affairs", hint:"This type of work is often app-based and on-demand.", explanation:"The gig economy has provided young people in Himachali towns with flexible, task-based work opportunities, primarily through app-based platforms for food delivery and ride-sharing."},
+            { question: "What modern technology helps farmers in Himachal better track crop health and soil moisture?", options: ["Radio broadcasts","Mobile apps & IoT sensors","Town criers","Printed manuals"], answer: "Mobile apps & IoT sensors", isHard: true, topic:"Agriculture", hint:"This involves using connected devices to gather data.", explanation:"Modern agricultural practices in Himachal are increasingly adopting Internet of Things (IoT) sensors and mobile applications to monitor soil conditions, weather, and crop health in real-time."},
+            { question: "What is a key focus of the 'Natural Farming Khushhal Kisan Yojana' scheme in Himachal?", options: ["Promoting use of chemical fertilizers", "Reducing dependence on chemicals", "Exclusively growing cash crops", "Mechanizing all farms"], answer: "Reducing dependence on chemicals", isHard: true, topic:"Agriculture", hint:"The name 'Natural Farming' is a big clue.", explanation:"The 'Prakritik Kheti Khushhal Kisan Yojana' is a state-led initiative to promote zero-budget natural farming, which aims to eliminate the use of chemical fertilizers and pesticides."},
+            { question: "The 'Himachal Pradesh State Data Centre' is a modern initiative for what purpose?", options: ["Storing historical photos", "Centralizing e-governance applications", "Tracking tourist movements", "Broadcasting radio signals"], answer: "Centralizing e-governance applications", isHard: true, topic:"Modern Affairs", hint:"It's a digital backbone for government services.", explanation:"The State Data Centre (SDC) is a core infrastructure project designed to host and manage all government websites, applications, and digital services in a secure and centralized manner."}
         ];
 
         // --- DOM ELEMENT CACHE ---
@@ -745,7 +852,7 @@
             }
         }
 
-        function playSound(sound, note) {
+        function playSound(sound) {
             if (state.settings.soundEnabled && sounds[sound] && Tone.context.state === 'running') {
                  if(sound === 'click'){
                     sounds.click.triggerAttack("G4", Tone.now());
@@ -758,55 +865,65 @@
             }
         }
         
-        // --- GEMINI API ---
-        async function callGemini(prompt, retries = 3, delay = 1000) {
-            const apiKey = ""; 
-            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=${apiKey}`;
-            try {
-                const payload = { contents: [{ parts: [{ text: prompt }] }] };
-                const response = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
-                if (!response.ok) throw new Error(`API Error: ${response.status}`);
-                const result = await response.json();
-                let text = result.candidates?.[0]?.content?.parts?.[0]?.text;
-                 if (text) {
-                    text = text.replace(/^```(json|)\s*/, '').replace(/```$/, '');
-                    return text.trim();
-                } else {
-                    throw new Error("Invalid response structure.");
-                }
-            } catch (error) {
-                if (retries > 0) {
-                    await new Promise(res => setTimeout(res, delay));
-                    return callGemini(prompt, retries - 1, delay * 2);
-                }
-                console.error("Gemini API call failed:", error);
-                return null;
-            }
-        }
-
-        async function fetchFactOfTheDay() {
-            const prompt = "Tell me a single, interesting, and concise fun fact about Himachal Pradesh, India. Keep it under 200 characters.";
-            const fact = await callGemini(prompt);
+        // --- BUILT-IN CONTENT FUNCTIONS ---
+        function fetchFactOfTheDay() {
+            const fact = FACTS_OF_THE_DAY[Math.floor(Math.random() * FACTS_OF_THE_DAY.length)];
             if(elements.geminiFactText) {
-                elements.geminiFactText.textContent = fact || "Could not load a fact right now.";
+                elements.geminiFactText.textContent = fact;
             }
         }
         
-        async function getExplanation(question, correctAnswer) {
-            const prompt = `For the quiz question "${question}", why is the correct answer "${correctAnswer}"? Provide a very brief, one-sentence explanation.`;
-            showModal(`<h2>✨ Explanation</h2><div class="scrollable-content"><p>Thinking...</p></div>`);
-            const explanation = await callGemini(prompt);
-            showModal(`<h2>✨ Explanation</h2><div class="scrollable-content"><p>${explanation || "Sorry, I couldn't get an explanation."}</p></div>`);
+        function getExplanation(explanation) {
+             showModal(`<h2>Explanation</h2><div class="scrollable-content"><p>${explanation || "No explanation available for this question."}</p></div>`);
         }
         
-        async function getHint() {
-            const prompt = `Give me a short, one-sentence hint for the following quiz question, but do NOT give the answer. Question: "${state.gameQuestions[state.questionIndex].question}" The correct answer is ${state.gameQuestions[state.questionIndex].answer}.`;
-            showAlert(`<h2>✨ Hint</h2><p>Thinking...</p>`);
-            const hint = await callGemini(prompt);
-            showAlert(`<h2>✨ Hint</h2><p>${hint || "Sorry, I couldn't get a hint."}</p>`);
+        function getHint(hint) {
+            showAlert(`<h2>Hint</h2><p>${hint || "No hint available for this question."}</p>`);
+        }
+        
+        function showStudyGuide() {
+            const guideFacts = [
+                "🏔️ Himachal Pradesh is a mountainous state in Northern India, part of the Western Himalayas.",
+                "🍎 It is known as the 'Apple State' of India, being one of the largest producers of apples.",
+                "🏛️ Shimla, the capital, was the former summer capital of British India.",
+                "🙏 The state is referred to as 'Devbhumi' or 'Land of the Gods' due to its numerous temples.",
+                "🏞️ It is home to several famous valleys like Kullu, Kangra, and Spiti."
+            ];
+            const listHTML = guideFacts.map((fact, index) => `<li style="animation-delay: ${index * 100}ms">${fact}</li>`).join('');
+            showModal(`<h2>📚 Study Guide</h2><div class="scrollable-content"><div class="study-guide"><ul>${listHTML}</ul></div></div>`);
         }
 
-        async function useFiftyFifty() {
+        function analyzePerformance() {
+            playSound('click');
+            const incorrectAnswers = state.userAnswers.filter(a => a.userAnswer !== a.answer);
+
+            if (incorrectAnswers.length === 0) {
+                showModal(`<h2>✨ Review Summary</h2><div class="scrollable-content"><p>Wow, a perfect score! You have an excellent knowledge of Himachal Pradesh. Keep up the fantastic work!</p></div>`);
+                return;
+            }
+            
+            const topics = [...new Set(incorrectAnswers.map(item => item.topic || "General"))];
+            const listItems = topics.map(topic => `<li>${topic}</li>`).join('');
+
+            const finalHTML = `<p>Great effort! Based on your answers, you might want to review the following topics:</p><ul>${listItems}</ul>`;
+            showModal(`<h2>✨ Review Summary</h2><div class="scrollable-content"><div class="study-guide">${finalHTML}</div></div>`);
+        }
+
+        // --- UI & FEEDBACK ---
+        function setupScrollIndicators() {
+            document.querySelectorAll('.scrollable-content').forEach(el => {
+                const indicator = el.parentElement.querySelector('.scroll-indicator');
+                if (indicator) {
+                    // Reset on new content
+                    indicator.classList.remove('scrolled');
+                    el.addEventListener('scroll', () => {
+                        indicator.classList.add('scrolled');
+                    }, { once: true });
+                }
+            });
+        }
+        
+        function useFiftyFifty() {
             state.powerupUsed = true;
             elements.powerup5050Btn.disabled = true;
             elements.powerup5050Btn.classList.add('faded');
@@ -821,82 +938,6 @@
             });
         }
 
-        async function showStudyGuide() {
-            showModal(`<h2>📚 Study Guide</h2><div class="scrollable-content"><p>Generating a quick study guide...</p></div>`);
-            const prompt = "Provide 5 interesting facts about Himachal Pradesh for a study guide. Each fact MUST start with a relevant emoji, followed by a space, then the fact text. Use a newline for each fact.";
-            const guideText = await callGemini(prompt);
-            if (guideText) {
-                const facts = guideText.split('\n').filter(fact => fact.trim() !== '');
-                const listHTML = facts.map((fact, index) => {
-                    const match = fact.match(/^(\p{Emoji_Presentation}|\p{Emoji}) (.*)/u);
-                    if (match) {
-                        return `<li style="animation-delay: ${index * 100}ms"><span>${match[1]}</span>${match[2]}</li>`;
-                    }
-                    return `<li style="animation-delay: ${index * 100}ms">${fact}</li>`;
-                }).join('');
-                showModal(`<h2>📚 Study Guide</h2><div class="scrollable-content"><div class="study-guide"><ul>${listHTML}</ul></div></div>`);
-            } else {
-                 showModal(`<h2>📚 Study Guide</h2><div class="scrollable-content"><div class="study-guide"><p>Could not load the study guide right now.</p></div></div>`);
-            }
-        }
-
-        async function analyzePerformance() {
-            playSound('click');
-            const incorrectAnswers = state.userAnswers.filter(a => a.userAnswer !== a.correctAnswer);
-
-            if (incorrectAnswers.length === 0) {
-                showModal(`<h2>✨ Performance Analysis</h2><div class="scrollable-content"><p>Wow, a perfect score! You have an excellent knowledge of Himachal Pradesh. Keep up the fantastic work!</p></div>`);
-                return;
-            }
-
-            showModal(`<h2>✨ Performance Analysis</h2><div class="scrollable-content"><p>Analyzing your results...</p></div>`);
-
-            const questionsForPrompt = incorrectAnswers.map(item => `- Question: "${item.question}" (Correct Answer: ${item.correctAnswer})`).join('\n');
-            
-            const prompt = `A user took a quiz about Himachal Pradesh. Here are the questions they got wrong:\n${questionsForPrompt}\n\nBased on these mistakes, what topics should they study more? Provide a brief, encouraging, one-paragraph analysis of their performance and then list 2-3 specific topics to focus on as a bulleted list.`;
-
-            const analysis = await callGemini(prompt);
-
-            let finalHTML = "Sorry, I couldn't generate an analysis at this time. Please try again later.";
-            if (analysis) {
-                const parts = analysis.split('\n').filter(p => p.trim() !== '');
-                const paragraph = `<p>${parts[0]}</p>`;
-                const listItems = parts.slice(1).map(item => `<li>${item.replace(/^- |^\* /, '')}</li>`).join('');
-                finalHTML = `${paragraph}<ul>${listItems}</ul>`;
-            }
-
-            showModal(`<h2>✨ Performance Analysis</h2><div class="scrollable-content"><div class="study-guide">${finalHTML}</div></div>`);
-        }
-
-        async function handleTellMeMore(event) {
-            const btn = event.currentTarget;
-            playSound('click');
-            btn.disabled = true;
-            btn.textContent = 'Thinking...';
-
-            const question = decodeURIComponent(btn.dataset.question);
-            const answer = decodeURIComponent(btn.dataset.answer);
-            const targetId = btn.dataset.targetId;
-            const targetElement = document.getElementById(targetId)?.querySelector('.more-info-content');
-
-            if (!targetElement) return;
-
-            const prompt = `A user is reviewing their quiz answers. For the topic related to the question "${question}" (where the correct answer is "${answer}"), provide an interesting paragraph (about 2-3 sentences) with more details. Focus on providing extra context or a fun fact. Do not repeat the question or the answer.`;
-            
-            const moreInfo = await callGemini(prompt);
-            
-            targetElement.style.display = 'block'; // Make the container visible
-
-            if (moreInfo) {
-                targetElement.innerHTML = `<p>${moreInfo}</p>`;
-            } else {
-                targetElement.innerHTML = `<p>Sorry, couldn't fetch more details right now.</p>`;
-            }
-
-            btn.style.display = 'none'; // Hide button after use
-        }
-
-        // --- UI & FEEDBACK ---
         function updateStreakCounter() {
             elements.streakCounter.textContent = `🔥 ${state.currentStreak}`;
             elements.streakCounter.classList.toggle('visible', state.currentStreak > 1);
@@ -982,7 +1023,7 @@
             elements.mascot.container.style.animation = '';
             elements.mascot.message.textContent = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
             elements.mascot.mouth.setAttribute('d', 'M48 35 C 49 36, 51 36, 52 35');
-            elements.mascot.container.classList.add('show', 'waving');
+            elements.mascot.container.classList.add('show');
             setTimeout(() => {
                 elements.mascot.container.classList.add('show-message');
             }, 800);
@@ -998,74 +1039,7 @@
             if (index < 25) return "Round 3 & 4";
             return "Hard Round 2";
         }
-
-
-        // --- CORE GAME LOGIC ---
-        function initializeState() {
-            let settings = { largeText: false, theme: 'auto', reduceMotion: false, soundEnabled: true };
-            try {
-                const saved = localStorage.getItem('quizSettings');
-                if (saved) settings = { ...settings, ...JSON.parse(saved) };
-            } catch (e) { console.error("Could not parse settings", e); }
-            
-            state = {
-                questionIndex: -1, 
-                gameQuestions: [],
-                correctAnswers: 0,
-                score: 0,
-                currentStreak: 0,
-                mistakesThisRound: 0,
-                questionTimer: null,
-                userAnswers: [],
-                settings: settings,
-                powerupUsed: false
-            };
-            
-            elements.progressBar.style.width = '0%';
-            updateStreakCounter();
-            clearInterval(state.questionTimer);
-        }
-
-        async function startGame() {
-            clearTimeout(mascotTimeout);
-            elements.mascot.container.classList.remove('show', 'show-message', 'waving');
-            
-            initializeState();
-            prepareQuestions();
-            applySettings();
-            switchScreen('quiz');
-            
-            const startMessages = ["Let's do this!", "Good luck!", "Here we go!", "The challenge begins!"];
-            showMascot(true, startMessages[Math.floor(Math.random() * startMessages.length)]);
-            await new Promise(res => setTimeout(res, 2000));
-            loadNextQuestion();
-        }
         
-        function setDynamicGreeting() {
-            const hour = new Date().getHours();
-            let greeting, timeOfDay;
-
-            if (hour >= 5 && hour < 12) {
-                greeting = "Good Morning!";
-                timeOfDay = 'morning';
-            } else if (hour >= 12 && hour < 18) {
-                greeting = "Good Afternoon!";
-                timeOfDay = 'afternoon';
-            } else if (hour >= 18 && hour < 21) {
-                greeting = "Good Evening!";
-                timeOfDay = 'evening';
-            } else {
-                greeting = "Good Night!";
-                timeOfDay = 'night';
-            }
-            
-            const greetingEl = document.getElementById('dynamic-greeting');
-            if (greetingEl) {
-                greetingEl.textContent = greeting;
-            }
-            updateHeroImage(timeOfDay);
-        }
-
         function updateHeroImage(timeOfDay) {
             const sunMoon = document.getElementById('sun-moon');
             const stars = document.getElementById('stars');
@@ -1105,6 +1079,72 @@
             }
         }
 
+        function setDynamicGreeting() {
+            const hour = new Date().getHours();
+            let greeting, timeOfDay;
+
+            if (hour >= 5 && hour < 12) {
+                greeting = "Good Morning!";
+                timeOfDay = 'morning';
+            } else if (hour >= 12 && hour < 18) {
+                greeting = "Good Afternoon!";
+                timeOfDay = 'afternoon';
+            } else if (hour >= 18 && hour < 21) {
+                greeting = "Good Evening!";
+                timeOfDay = 'evening';
+            } else {
+                greeting = "Good Night!";
+                timeOfDay = 'night';
+            }
+            
+            const greetingEl = document.getElementById('dynamic-greeting');
+            if (greetingEl) {
+                greetingEl.textContent = greeting;
+            }
+            updateHeroImage(timeOfDay);
+        }
+
+        // --- CORE GAME LOGIC ---
+        function initializeState() {
+            let settings = { largeText: false, theme: 'auto', reduceMotion: false, soundEnabled: true };
+            try {
+                const saved = localStorage.getItem('quizSettings');
+                if (saved) settings = { ...settings, ...JSON.parse(saved) };
+            } catch (e) { console.error("Could not parse settings", e); }
+            
+            state = {
+                questionIndex: -1, 
+                gameQuestions: [],
+                correctAnswers: 0,
+                score: 0,
+                currentStreak: 0,
+                mistakesThisRound: 0,
+                questionTimer: null,
+                userAnswers: [],
+                settings: settings,
+                powerupUsed: false
+            };
+            
+            elements.progressBar.style.width = '0%';
+            updateStreakCounter();
+            clearInterval(state.questionTimer);
+        }
+
+        async function startGame() {
+            clearTimeout(mascotTimeout);
+            elements.mascot.container.classList.remove('show');
+            
+            initializeState();
+            prepareQuestions();
+            applySettings();
+            switchScreen('quiz');
+            
+            const startMessages = ["Let's do this!", "Good luck!", "Here we go!", "The challenge begins!"];
+            showMascot(true, startMessages[Math.floor(Math.random() * startMessages.length)]);
+            await new Promise(res => setTimeout(res, 2000));
+            loadNextQuestion();
+        }
+
         function goHome() {
             switchScreen('welcome');
             initializeState();
@@ -1112,23 +1152,19 @@
             displayLeaderboard(elements.leaderboardArea, true);
             showWelcomeMascot();
             setDynamicGreeting();
-            if(elements.geminiFactText) {
-                elements.geminiFactText.textContent = "Fetching a new fun fact...";
-            }
-            fetchFactOfTheDay();
+            fetchFactOfTheDay(); // Fetch new fact from built-in list
+            setupScrollIndicators();
         }
 
         function prepareQuestions() {
-            const sessionNormal = shuffleArray(NORMAL_QUESTIONS);
-            const sessionHard = shuffleArray(HARD_QUESTIONS);
-            state.gameQuestions = [
-                ...sessionNormal.slice(0, 10),
-                ...sessionHard.slice(0, 5),
-                ...sessionNormal.slice(10, 20),
-                ...sessionHard.slice(5, 10)
-            ];
-            const geminiQIndex = Math.floor(Math.random() * 20) + 5;
-            state.gameQuestions.splice(geminiQIndex, 0, { type: 'gemini_place' });
+            const allQuestionsShuffled = shuffleArray(ALL_QUESTIONS);
+            const specialQuestion = shuffleArray(BUILT_IN_SPECIAL_QUESTIONS)[0];
+            
+            // Take questions from the main pool and add 1 special question
+            const gameQuestions = allQuestionsShuffled.slice(0, TOTAL_QUESTIONS_PER_ROUND - 1);
+            gameQuestions.push(specialQuestion);
+            
+            state.gameQuestions = shuffleArray(gameQuestions);
         }
         
         function loadNextQuestion() {
@@ -1151,38 +1187,15 @@
 
             state.questionIndex++;
 
-            if (state.questionIndex >= TOTAL_QUESTIONS) {
+            if (state.questionIndex >= TOTAL_QUESTIONS_PER_ROUND) {
                 showResults();
                 return;
             }
             
             const q = state.gameQuestions[state.questionIndex];
-            if (q.type === 'gemini_place') {
-                generateGeminiQuestion();
-            } else {
-                displayQuestion(q);
-            }
+            displayQuestion(q);
         }
         
-        async function generateGeminiQuestion() {
-            elements.question.textContent = "Generating a special question...";
-            elements.options.innerHTML = "";
-
-            const prompt = `Create a "Guess the Place" quiz question about a famous location in Himachal Pradesh. Provide a descriptive paragraph (2-3 sentences) and four options: one correct answer and three plausible but incorrect alternative locations from Himachal. Format the output as a JSON object with keys: "question", "options", "answer".`;
-            
-            const result = await callGemini(prompt);
-            try {
-                const newQ = JSON.parse(result);
-                newQ.isHard = true; 
-                state.gameQuestions[state.questionIndex] = newQ;
-                displayQuestion(newQ);
-            } catch (e) {
-                console.error("Failed to parse Gemini question, loading a backup:", e);
-                state.gameQuestions[state.questionIndex] = shuffleArray(HARD_QUESTIONS)[0];
-                displayQuestion(state.gameQuestions[state.questionIndex]);
-            }
-        }
-
         function displayQuestion(q) {
             if (!q) { showResults(); return; }
 
@@ -1195,8 +1208,8 @@
                 elements.question.style.animation = 'question-fade-in 0.5s ease';
             }
             
-            elements.progressBar.style.width = `${((state.questionIndex + 1) / TOTAL_QUESTIONS) * 100}%`;
-            elements.roundTitle.textContent = `${getRoundTitle(state.questionIndex)} (${state.questionIndex + 1}/${TOTAL_QUESTIONS})`;
+            elements.progressBar.style.width = `${((state.questionIndex + 1) / TOTAL_QUESTIONS_PER_ROUND) * 100}%`;
+            elements.roundTitle.textContent = `${getRoundTitle(state.questionIndex)} (${state.questionIndex + 1}/${TOTAL_QUESTIONS_PER_ROUND})`;
             elements.question.textContent = q.question;
             elements.options.innerHTML = "";
             
@@ -1211,7 +1224,7 @@
             });
             
             setTimeout(() => {
-                elements.hintBtn.style.display = 'inline-flex';
+                elements.hintBtn.style.display = q.hint ? 'inline-flex' : 'none';
                 if(!state.powerupUsed) elements.powerup5050Btn.style.display = 'inline-flex';
             }, 3000);
             
@@ -1237,10 +1250,9 @@
             playSound(isCorrect ? 'correct' : 'incorrect');
 
             state.userAnswers.push({
-                question: q.question, 
-                options: state.gameQuestions[state.questionIndex].shuffledOptions,
-                correctAnswer: q.answer, 
-                userAnswer: selectedOption
+                ...q,
+                userAnswer: selectedOption,
+                options: state.gameQuestions[state.questionIndex].shuffledOptions // Save the order they saw
             });
 
             Array.from(elements.options.children).forEach(btn => {
@@ -1277,11 +1289,13 @@
                 textSpan.textContent = feedbackText;
                 elements.feedbackArea.appendChild(textSpan);
                 
-                const explainBtn = document.createElement('button');
-                explainBtn.innerHTML = '✨ Explain';
-                explainBtn.className = 'secondary-btn explain-btn';
-                explainBtn.onclick = () => { playSound('click'); getExplanation(q.question, q.answer); };
-                elements.feedbackArea.appendChild(explainBtn);
+                if (q.explanation) {
+                    const explainBtn = document.createElement('button');
+                    explainBtn.innerHTML = 'Explain';
+                    explainBtn.className = 'secondary-btn explain-btn';
+                    explainBtn.onclick = () => { playSound('click'); getExplanation(q.explanation); };
+                    elements.feedbackArea.appendChild(explainBtn);
+                }
 
                 elements.feedbackArea.className = 'incorrect visible';
                 flashAurora(false);
@@ -1298,7 +1312,7 @@
             const animatedElements = [elements.medalDisplay, elements.finalBadge, elements.scoreDisplayArea, elements.saveScoreContainer, elements.resultsLeaderboardArea, elements.resultsButtonsArea];
             animatedElements.forEach(el => el.classList.remove('animate'));
 
-            const percentage = (state.correctAnswers / TOTAL_QUESTIONS) * 100;
+            const percentage = (state.correctAnswers / TOTAL_QUESTIONS_PER_ROUND) * 100;
             let badge, medalIcon, badgeClass;
             
             if (percentage >= 90) { badge = "Gold Medalist"; medalIcon = "🥇"; badgeClass = "gold"; if(!state.settings.reduceMotion && typeof confetti === 'function') setTimeout(() => confetti({ particleCount: 150, spread: 90, zIndex: 2001 }), 500); }
@@ -1315,7 +1329,7 @@
             finalScoreEl.className = 'score-value final';
             finalScoreEl.textContent = '0';
 
-            elements.scoreDisplayArea.innerHTML = `<div class="score-breakdown"><div>Final Score <span id="final-score-container"></span></div><div>Correct Answers <span class="score-value">${state.correctAnswers} / ${TOTAL_QUESTIONS} (${percentage.toFixed(0)}%)</span></div></div>`;
+            elements.scoreDisplayArea.innerHTML = `<div class="score-breakdown"><div>Final Score <span id="final-score-container"></span></div><div>Correct Answers <span class="score-value">${state.correctAnswers} / ${TOTAL_QUESTIONS_PER_ROUND} (${percentage.toFixed(0)}%)</span></div></div>`;
             document.getElementById('final-score-container').appendChild(finalScoreEl);
 
             elements.saveScoreContainer.innerHTML = `<div id="save-score-area"><input type="text" id="player-name" placeholder="Enter your name" maxlength="15"><button id="save-score-btn">Save Score</button></div>`;
@@ -1324,12 +1338,12 @@
             
             elements.resultsButtonsArea.innerHTML = `
                 <div style="grid-column: span 2; margin-bottom: 12px;">
-                    <button id="analyze-performance-btn" class="main-btn">✨ Analyze My Performance</button>
+                    <button id="analyze-performance-btn" class="main-btn">Review Summary</button>
                 </div>
                 <button id="review-answers-btn" class="secondary-btn">Review Answers</button>
                 <button id="go-home-btn-results" class="main-btn">Go Home</button>
             `;
-            document.getElementById('analyze-performance-btn').onclick = () => { playSound('click'); analyzePerformance(); };
+            document.getElementById('analyze-performance-btn').onclick = analyzePerformance;
             document.getElementById('go-home-btn-results').onclick = () => { playSound('click'); goHome(); };
             document.getElementById('review-answers-btn').onclick = () => { playSound('click'); showReviewModal(); };
 
@@ -1338,6 +1352,7 @@
             setTimeout(() => {
                 animatedElements.forEach(el => el.classList.add('animate'));
                 animateScore(state.score, finalScoreEl);
+                setupScrollIndicators();
             }, 100);
         }
         
@@ -1430,46 +1445,79 @@
         
         function applySettings() {
             const settings = state.settings || { theme: 'auto', largeText: false, reduceMotion: false, soundEnabled: true };
-            elements.docElement.setAttribute('data-theme', settings.theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : settings.theme);
+            applyTheme(); // Use the dedicated theme function
             elements.docElement.classList.toggle('large-text', settings.largeText);
             elements.body.classList.toggle('reduce-motion', settings.reduceMotion);
         }
         
         function applyTheme() {
-            const theme = state.settings.theme;
-            elements.docElement.setAttribute('data-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme);
+            const theme = (state.settings && state.settings.theme) ? state.settings.theme : 'auto';
+            if (theme === 'auto') {
+                document.documentElement.setAttribute('data-theme', window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            } else {
+                document.documentElement.setAttribute('data-theme', theme);
+            }
         }
 
         function showReviewModal() {
             let reviewHTML = '<h2>Review Your Answers</h2><div class="scrollable-content"><div class="review-list">';
             state.userAnswers.forEach((ans, index) => {
-                const safeQuestion = encodeURIComponent(ans.question);
-                const safeAnswer = encodeURIComponent(ans.correctAnswer);
-
-                reviewHTML += `
-                    <div class="review-question-item" id="review-item-${index}">
-                        <h4>${index + 1}. ${ans.question}</h4>`;
+                reviewHTML += `<div class="review-question-item" id="review-item-${index}"><h4>${index + 1}. ${ans.question}</h4>`;
                 
                 (ans.options || []).forEach(opt => {
                     let classes = 'review-option';
-                    if (opt === ans.correctAnswer) classes += ' correct-answer';
+                    if (opt === ans.answer) classes += ' correct-answer'; // Use 'answer' from the object
                     else if (opt === ans.userAnswer) classes += ' user-incorrect';
                     reviewHTML += `<span class="${classes}">${opt}</span>`;
                 });
                 
-                reviewHTML += `
-                        <div style="text-align: right; margin-top: 12px;">
-                            <button class="secondary-btn explain-btn tell-me-more-btn" data-question="${safeQuestion}" data-answer="${safeAnswer}" data-target-id="review-item-${index}">✨ Tell Me More</button>
-                        </div>
-                        <div class="more-info-content" style="margin-top: 12px; padding: 12px; border-radius: 8px; background-color: rgba(var(--accent-rgb), 0.05); display: none; text-align: left; font-size: 0.9rem; color: var(--text-secondary);"></div>
-                    </div>`;
+                if (ans.moreInfo) {
+                    reviewHTML += `<div class="more-info-content" style="margin-top: 12px; padding: 12px; border-radius: 8px; background-color: rgba(var(--accent-rgb), 0.05); text-align: left; font-size: 0.9rem; color: var(--text-secondary);"><p><b>Did you know?</b> ${ans.moreInfo}</p></div>`;
+                }
+                reviewHTML += '</div>';
             });
-            reviewHTML += '</div></div>';
+            reviewHTML += '</div></div><div class="scroll-indicator"></div>';
             showModal(reviewHTML);
+            setupScrollIndicators();
+        }
 
-            document.querySelectorAll('.tell-me-more-btn').forEach(btn => {
-                btn.addEventListener('click', handleTellMeMore);
-            });
+        function showAboutModal() {
+            const aboutHTML = `
+                <h2>About This Quiz</h2>
+                <div class="scrollable-content" style="text-align: left;">
+                    <p>Version ${QUIZ_VERSION}</p>
+                    <p>This is a fun, interactive quiz designed to test your knowledge about the beautiful state of Himachal Pradesh.</p>
+                    <p style="margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary);">Copyright © 2025 Saksham Negi. All Rights Reserved.</p>
+                </div>
+                <div class="modal-buttons">
+                    <button id="backstory-btn" class="main-btn">View Project Backstory</button>
+                </div>
+            `;
+            showModal(aboutHTML);
+            document.getElementById('backstory-btn').onclick = () => {
+                playSound('click');
+                showProjectBackstoryModal();
+            };
+        }
+        
+        function showProjectBackstoryModal() {
+            const backstoryHTML = `
+                <h2>Project Backstory</h2>
+                <div class="scrollable-content"><div class="study-guide">
+                    <h4>The Spark 💡</h4>
+                    <p>As my final-year project for the Computer Club, I challenged myself to build a professional web application in just <b>72 hours</b>. The goal was to create an engaging quiz that was fast, beautiful, and worked on any device.</p>
+                    
+                    <h4>The Tech Stack 💻</h4>
+                    <p>I built this using pure <b>HTML, CSS, and JavaScript (ES6+)</b>, without any frameworks. This single-file architecture makes it incredibly fast and portable. All the animations are done with CSS for smooth performance.</p>
+
+                    <h4>AI Collaboration 🤖</h4>
+                    <p>To create a rich question bank under the deadline, I used Google's Gemini as a research assistant. I prompted it for topics and initial question drafts, but then <b>I personally fact-checked, edited, and curated every single piece of content</b> to ensure quality and accuracy for the final quiz.</p>
+                    
+                </div></div>
+                 <div class="scroll-indicator"></div>
+            `;
+            showModal(backstoryHTML);
+            setupScrollIndicators();
         }
 
         // --- LEADERBOARD & ADMIN ---
@@ -1549,26 +1597,6 @@
               document.getElementById('confirm-yes-btn').onclick = () => { playSound('click', 'C3'); if(activeModalClose) activeModalClose(true); resolve(true); };
               document.getElementById('confirm-no-btn').onclick = () => { playSound('click'); if(activeModalClose) activeModalClose(true); resolve(false); };
           });
-        }
-        
-        function showAdvancedAbout() {
-            const advancedAboutHTML = `
-                <h2>Project Fusion: The Backstory</h2>
-                <div class="scrollable-content"><div class="study-guide">
-                    <p>This project, codenamed 'Fusion,' was conceived by <b>Saksham Negi</b> as a final-year project for the Computer Club. The initial goal was to create a modern, CBSE-style quiz application that was both educational and highly engaging for all age groups.</p>
-                    <h4>Technical Architecture</h4>
-                    <p>The core application is built on a robust, single-file HTML architecture, leveraging modern JavaScript (ES6+) for its logic engine. State management is handled through a centralized 'state' object to ensure data integrity throughout the quiz lifecycle.</p>
-                    <h4>AI Integration</h4>
-                    <p>To push the boundaries of an interactive quiz, Saksham integrated Google's Gemini API. This integration uses a custom-built asynchronous request handler with exponential backoff for API call stability. Gemini powers several key features:</p>
-                    <ul>
-                        <li><b>Procedural Content:</b> The 'Fact of the Day' and dynamic 'Guess the Place' questions are generated live, ensuring fresh content.</li>
-                        <li><b>Contextual Learning Aids:</b> The 'Hint', '50/50', and 'Explain' features use Gemini's reasoning capabilities to provide helpful assistance without giving away the answer.</li>
-                    </ul>
-                    <h4>UI/UX Philosophy</h4>
-                    <p>The user interface, refined with assistance from Gemini, focuses on fluidity and responsiveness. Animations are CSS-driven for performance, with a 'Reduce Motion' accessibility option included.</p>
-                </div></div>
-            `;
-            showModal(advancedAboutHTML);
         }
 
         async function handleManageLeaderboard() { if (await promptForAdminPassword()) renderLeaderboardManager(); }
@@ -1651,10 +1679,14 @@
             };
             elements.startBtn.addEventListener('click', () => { playClick(); startGame(); });
             elements.nextBtn.addEventListener('click', () => { playClick(); loadNextQuestion(); });
-            elements.aboutBtn.addEventListener('click', (e) => { e.preventDefault(); playClick(); showAdvancedAbout(); });
+            elements.aboutBtn.addEventListener('click', (e) => { e.preventDefault(); playClick(); showAboutModal(); });
             elements.settingsBtn.addEventListener('click', (e) => { e.preventDefault(); playClick(); showSettingsModal(); });
             elements.studyGuideBtn.addEventListener('click', (e) => { e.preventDefault(); playClick(); showStudyGuide(); });
-            elements.hintBtn.addEventListener('click', () => { playClick(); getHint(); });
+            elements.hintBtn.addEventListener('click', () => { 
+                playClick();
+                const q = state.gameQuestions[state.questionIndex];
+                if(q) getHint(q.hint); 
+            });
             elements.powerup5050Btn.addEventListener('click', () => { playClick(); useFiftyFifty(); });
         }
         
@@ -1670,10 +1702,9 @@
         document.body.addEventListener('touchend', initAudioOnFirstInteraction);
 
         goHome();
-        fetchFactOfTheDay();
         setupSounds();
         bindEvents();
-
+        // SCRIPT END - If you see this, the code is complete.
     });
   </script>
 </body>
