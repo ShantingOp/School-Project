@@ -12,7 +12,6 @@
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.7.77/Tone.js"></script>
   <script>
-    // Self-executing function to apply theme on initial load, preventing flash of unstyled content.
     (() => {
       try {
         const settings = JSON.parse(localStorage.getItem('quizSettings')) || { theme: 'auto' };
@@ -22,25 +21,15 @@
           document.documentElement.setAttribute('data-theme', settings.theme);
         }
       } catch (e) {
-        // Default to dark theme if anything goes wrong
         document.documentElement.setAttribute('data-theme', 'dark');
       }
     })();
   </script>
   <style>
-    /* ---
-      HIMACHAL QUIZ CHALLENGE (v49.0 - Backstory & Bug Fix)
-      - Added new, detailed project backstory.
-      - Fixed scroll indicator bug inside pop-up modals.
-      - Copyright (c) 2025 Saksham Negi
-    --- */
-
     :root {
       --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       --font-display: 'Orbitron', sans-serif;
       --base-font-size: 16px; --large-font-size: 18px;
-      
-      /* Light Theme (Redesigned) */
       --bg-light: #f0f2f5;
       --card-bg-light: #ffffff;
       --card-bg-light-rgb: 255, 255, 255;
@@ -49,8 +38,6 @@
       --text-secondary-light: #606770;
       --accent-light: #1877f2;
       --accent-light-rgb: 24, 119, 242;
-      
-      /* Dark Theme */
       --bg-dark: #111217; 
       --card-bg-dark: #1c1d23; 
       --card-bg-dark-rgb: 28, 29, 35; 
@@ -59,12 +46,10 @@
       --text-secondary-dark: #a1a1a6; 
       --accent-dark: #00f2fe; 
       --accent-dark-rgb: 0, 242, 254;
-
       --glow-correct: #32d74b; --glow-incorrect: #ff453a; --gold: #ffc900; --silver: #d1d1d6; --bronze: #d99a75;
       --transition-fast: 0.2s cubic-bezier(0.4, 0, 0.2, 1); --transition-medium: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
       --shadow-md: 0 8px 30px rgba(0,0,0,0.12);
     }
-    
     [data-theme="light"] {
       --bg: var(--bg-light); --card-bg: var(--card-bg-light); --card-bg-rgb: var(--card-bg-light-rgb); --card-border: var(--card-border-light);
       --text-primary: var(--text-primary-light); --text-secondary: var(--text-secondary-light);
@@ -75,19 +60,16 @@
       --text-primary: var(--text-primary-dark); --text-secondary: var(--text-secondary-dark);
       --accent: var(--accent-dark); --accent-rgb: var(--accent-dark-rgb);
     }
-
     *, *::before, *::after { 
         box-sizing: border-box;
         transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
     }
-
     html, body {
       height: 100%;
       margin: 0;
       overflow: hidden; 
     }
     html { scroll-behavior: smooth; }
-
     body {
       font-family: var(--font-primary); background-color: var(--bg); color: var(--text-primary);
       display: flex; align-items: center; justify-content: center;
@@ -96,7 +78,6 @@
     }
     html.large-text { font-size: var(--large-font-size); }
     html.modal-open, body.modal-open { overflow: hidden; }
-
     .background-aurora {
       position: fixed;
       top: -25vh;
@@ -113,7 +94,6 @@
     @keyframes aurora-flow { from { transform: rotate(0deg) scale(1.2); } to { transform: rotate(360deg) scale(1.5); } }
     @keyframes flash-correct { from { background-color: rgba(50, 215, 75, 0.2); } to { background-color: transparent; } }
     @keyframes flash-incorrect { from { background-color: rgba(255, 69, 58, 0.2); } to { background-color: transparent; } }
-
     .screen {
       width: 100%;
       max-width: 680px;
@@ -129,7 +109,6 @@
         display: flex;
         opacity: 1;
     }
-
     .container {
       background-color: rgba(var(--card-bg-rgb), 0.75);
       border: 1px solid var(--card-border); 
@@ -147,7 +126,6 @@
     }
     .scrollable-content::-webkit-scrollbar { display: none; }
     .scrollable-content { -ms-overflow-style: none; scrollbar-width: none; }
-    
     .container::before {
         content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 32px; padding: 1px;
         background: linear-gradient(135deg, rgba(var(--accent-rgb), 0.5), rgba(var(--accent-rgb), 0));
@@ -157,7 +135,6 @@
         pointer-events: none;
     }
     @keyframes rotate-border { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
     .container::after {
         content: '';
         position: absolute;
@@ -175,21 +152,17 @@
     [data-theme="dark"] .container::after {
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%2300f2fe' fill-opacity='0.05' d='M0,224L48,208C96,192,192,160,288,165.3C384,171,480,213,576,240C672,267,768,277,864,256C960,235,1056,181,1152,154.7C1248,128,1344,128,1392,128L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
     }
-
-
     .container-header { margin-bottom: 24px; z-index: 1; }
     .container-main { flex-grow: 1; display: flex; flex-direction: column; justify-content: center; z-index: 1; }
     .container-footer { margin-top: 24px; z-index: 1; }
     h1 { font-size: clamp(1.75rem, 5vw, 2.25rem); font-weight: 800; margin: 0 0 8px; }
     h2 { font-size: 1.125rem; color: var(--text-secondary); margin: 0; font-weight: 400; }
     p { color: var(--text-secondary); line-height: 1.6; font-size: 1rem; }
-
     button, input, .welcome-options a {
       outline: none;
       -webkit-tap-highlight-color: transparent;
       touch-action: manipulation;
     }
-
     .main-btn, .secondary-btn, .danger-btn { display: inline-flex; justify-content: center; align-items: center; width: 100%; max-width: 320px; padding: 16px; border-radius: 16px; font-size: 1.125rem; font-weight: 600; border: none; cursor: pointer; transition: transform var(--transition-fast), box-shadow var(--transition-fast); user-select: none; }
     .main-btn:active, .secondary-btn:active, .danger-btn:active { transform: scale(0.97); animation: button-pop 0.2s; }
     @keyframes button-pop { 0% { transform: scale(1); } 50% { transform: scale(0.95); } 100% { transform: scale(1); } }
@@ -197,7 +170,6 @@
     .main-btn:hover { box-shadow: 0 6px 25px rgba(var(--accent-rgb), 0.4); transform: translateY(-2px); }
     .secondary-btn { background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
     .danger-btn { background-color: var(--glow-incorrect); color: #fff; }
-
     #welcome-screen .container-header,
     #welcome-screen .container-main > *,
     #welcome-screen .container-footer > * {
@@ -205,10 +177,8 @@
     }
     #welcome-screen .container-main > *:nth-child(1) { animation-delay: 0.1s; }
     #welcome-screen .container-main > *:nth-child(2) { animation-delay: 0.2s; }
-    #welcome-screen .container-main > *:nth-child(3) { animation-delay: 0.3s; }
-    #welcome-screen .container-footer > * { animation-delay: 0.4s; }
+    #welcome-screen .container-footer > * { animation-delay: 0.3s; }
     #welcome-screen .welcome-options a { animation: none; }
-
     .hero-image { width: 100%; max-width: 250px; height: auto; margin: -16px auto 16px; display: block; }
     .hero-image #sun-moon { transform-origin: center; transition: cy 1s ease-in-out, fill 1s ease-in-out; }
     .hero-image #mountains path { animation: float 6s infinite ease-in-out; }
@@ -216,7 +186,6 @@
     .hero-image #mountains path:nth-child(3) { animation-delay: -4s; }
     @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
     #dynamic-greeting { color: var(--text-secondary); font-weight: 600; margin: 0 0 8px; font-size: 1rem; text-transform: uppercase; letter-spacing: 0.5px; }
-    
     #welcome-screen .main-btn {
         animation: pulse-glow 3s infinite ease-in-out, fade-in-up 0.6s ease-out 0.4s backwards;
     }
@@ -230,17 +199,14 @@
             transform: scale(1.02);
         }
     }
-    
     .quiz-top-bar { display: flex; justify-content: space-between; align-items: center; padding: 0 8px; margin-bottom: 16px; }
     #round-title { font-size: 0.875rem; font-weight: 600; color: var(--text-secondary); }
     #streak-counter { background-color: rgba(255, 149, 0, 0.8); color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.875rem; font-weight: 600; transform: scale(0); transition: transform var(--transition-medium); }
     #streak-counter.visible { transform: scale(1); }
     #progress-bar-container { width: 100%; background: rgba(120,120,128,0.24); border-radius: 10px; height: 8px; margin-bottom: 30px; overflow: hidden; }
     #progress-bar { height: 100%; width: 0%; background: var(--accent); border-radius: 10px; transition: width 0.5s cubic-bezier(0.65, 0, 0.35, 1); }
-    
     @keyframes question-fade-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     .question { font-size: clamp(1.25rem, 4vw, 1.5rem); font-weight: 600; line-height: 1.4; margin: 0 0 24px; overflow-wrap: break-word; }
-
     .options {
         display: flex;
         flex-direction: column;
@@ -279,7 +245,6 @@
     .options button:hover::after {
         transform: translateX(100%) skewX(-20deg);
     }
-
     .options button:not(:disabled):hover { background-color: rgba(var(--accent-rgb), 0.1); border-color: var(--accent); transform: scale(1.02); }
     .options button.correct { background-color: rgba(50, 215, 75, 0.2); border-color: var(--glow-correct); color: var(--text-primary) !important; transform: scale(1.02); animation: correct-answer-pop 0.5s ease-out; }
     @keyframes correct-answer-pop { 0% { transform: scale(1.02); } 50% { transform: scale(1.05); } 100% { transform: scale(1.02); } }
@@ -287,7 +252,6 @@
     .options button.answered:not(.correct) { opacity: 0.5; transform: scale(0.98); }
     .options button.faded { opacity: 0.3 !important; pointer-events: none; }
     .options button:disabled { cursor: not-allowed; }
-
     #feedback-area { min-height: 48px; margin-top: 20px; font-size: 1.125rem; font-weight: 600; transform: scale(0.8); opacity: 0; display: flex; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap;}
     #feedback-area.visible { animation: feedback-pop-in 0.5s forwards; }
     @keyframes feedback-pop-in { 0% { transform: scale(0.8); opacity: 0; } 70% { transform: scale(1.05); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
@@ -296,16 +260,13 @@
     .explain-btn { padding: 6px 12px; font-size: 0.9rem; max-width: 150px; margin-top: 0; height: auto; }
     #hint-btn, #powerup-5050-btn { padding: 6px 12px; font-size: 0.9rem; max-width: 150px; margin: 16px 5px 0; height: auto; display: none; }
     .powerup-container { display: flex; justify-content: center; }
-
     #timer-bar-container { width: 100%; background: rgba(120,120,128,0.24); border-radius: 10px; height: 8px; margin-top: 20px; overflow: hidden; display: none; }
     #timer-bar { height: 100%; width: 100%; background: var(--glow-incorrect); border-radius: 10px; }
-    
     .medal-display { font-size: 80px; margin: 0 auto 16px; transform: scale(0); opacity: 0;}
     .medal-display.animate { animation: pop-in-medal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     #final-badge { font-size: 1.5rem; font-weight: 800; transform: scale(0); opacity: 0;}
     #final-badge.animate { animation: pop-in-medal 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) 0.2s forwards; }
     @keyframes pop-in-medal { from { opacity: 0; transform: scale(0.5); } to { opacity: 1; transform: scale(1); } }
-    
     #final-badge.gold { color: var(--gold); } #final-badge.silver { color: var(--silver); } #final-badge.bronze { color: var(--bronze); }
     #score-display-area { margin: 24px 0; font-size: 1rem; text-align: left; opacity: 0; transform: translateY(10px); }
     #score-display-area.animate { animation: fade-in-up 0.5s ease-out 0.4s forwards; }
@@ -313,27 +274,22 @@
     .score-breakdown > div:last-child { border: none; }
     .score-value { font-weight: 600; } 
     #final-score-value { font-size: 1.25rem; color: var(--accent); }
-    
     .results-buttons, #save-score-container, #results-leaderboard-area { opacity: 0; transform: translateY(10px); }
     #save-score-container.animate { animation: fade-in-up 0.5s ease-out 0.6s forwards; }
     #results-leaderboard-area.animate { animation: fade-in-up 0.5s ease-out 0.7s forwards; }
     .results-buttons.animate { animation: fade-in-up 0.5s ease-out 0.8s forwards; }
     @keyframes fade-in-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
     .results-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
     .results-buttons button { width: 100%; max-width: none; }
-
     .leaderboard { margin-top: 24px; text-align: left; }
     .leaderboard h3 { font-size: 1rem; text-align: center; color: var(--text-secondary); margin-bottom: 12px; }
     .leaderboard ol { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
     .leaderboard li { display: flex; align-items: center; justify-content: space-between; padding: 12px; border-radius: 10px; background-color: rgba(120,120,128,0.12); font-size: 0.9rem; }
     .leaderboard li:nth-child(1)::before { content: '🥇'; margin-right: 8px; } .leaderboard li:nth-child(2)::before { content: '🥈'; margin-right: 8px; } .leaderboard li:nth-child(3)::before { content: '🥉'; margin-right: 8px; }
     .leaderboard .score { font-weight: 600; }
-
     #save-score-area { display: flex; gap: 10px; margin: 20px 0; }
     #save-score-area input { flex-grow: 1; padding: 12px; border-radius: 12px; border: 1px solid var(--card-border); background: rgba(120,120,128,0.12); color: var(--text-primary); font-size: 1rem; }
     #save-score-area button { padding: 12px 20px; border-radius: 12px; border: none; background: var(--accent); color: var(--card-bg-light); cursor: pointer; font-weight: 600; }
-
     #modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity var(--transition-medium); z-index: 2000; }
     #modal-overlay.show { opacity: 1; pointer-events: auto; }
     #modal-overlay .container { 
@@ -346,13 +302,12 @@
     #modal-validation-message { color: var(--glow-incorrect); font-size: 0.9rem; height: 1.2em; margin-top: 8px; }
     .study-guide { text-align: left; } .study-guide ul { padding-left: 0; list-style: none; } 
     .study-guide li { display: flex; align-items: flex-start; margin-bottom: 12px; opacity: 0; animation: fade-in-up 0.5s ease-out forwards; }
+    .study-guide h4 { margin-top: 24px; }
     .study-guide li span { margin-right: 12px; font-size: 1.2rem; }
-
     .welcome-options { margin-top: 32px; display: flex; flex-wrap: wrap; justify-content: center; gap: 16px; }
     .welcome-options a { display: flex; flex-direction: column; align-items: center; justify-content: center; width: 90px; height: 90px; background-color: rgba(120,120,128,0.12); border-radius: 24px; color: var(--text-secondary); text-decoration: none; font-size: 0.8rem; font-weight: 600; transition: transform var(--transition-fast), background-color var(--transition-fast); }
     .welcome-options a:hover { transform: translateY(-4px) scale(1.1); background-color: rgba(120,120,128,0.24); color: var(--text-primary); }
     .welcome-options a svg { width: 28px; height: 28px; margin-bottom: 8px; stroke-width: 2; }
-    
     .settings-row {
         display: flex;
         justify-content: space-between;
@@ -380,37 +335,17 @@
         font-weight: 600;
         letter-spacing: 0.5px;
     }
-
     .switch { position: relative; display: inline-block; width: 50px; height: 28px; }
     .switch input { opacity: 0; width: 0; height: 0; }
     .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(120,120,128,0.24); transition: var(--transition-fast); border-radius: 28px; }
     .slider:before { position: absolute; content: ""; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: var(--transition-fast); border-radius: 50%; }
     input:checked + .slider { background-color: var(--accent); }
     input:checked + .slider:before { transform: translateX(22px); }
-    
     .review-question-item { text-align: left; padding: 16px; margin-bottom: 12px; border: 1px solid var(--card-border); border-radius: 12px; }
     .review-question-item h4 { margin: 0 0 12px; font-size: 1rem; }
     .review-option { display: block; padding: 8px; border-radius: 8px; margin: 4px 0; font-size: 0.9rem; }
     .review-option.correct-answer { background-color: rgba(50, 215, 75, 0.2); }
     .review-option.user-incorrect { background-color: rgba(255, 69, 58, 0.2); text-decoration: line-through; }
-
-    .fact-feature {
-        border: 1px solid var(--card-border);
-        border-radius: 16px;
-        padding: 16px;
-        margin-top: 24px;
-        background-color: rgba(var(--accent-rgb), 0.05);
-    }
-    .fact-feature h3 {
-        margin: 0 0 8px;
-        font-size: 1rem;
-        color: var(--accent);
-    }
-    .fact-feature p {
-        font-size: 0.9rem;
-        margin: 0;
-    }
-    
     #mascot {
         position: fixed;
         bottom: 15px;
@@ -424,20 +359,18 @@
     #mascot.show {
         animation: mascot-bounce-in 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
     }
+    #mascot.hide {
+        animation: mascot-bounce-out 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+    }
     @keyframes mascot-bounce-in {
         0% { transform: translateY(200%) scale(0.5); }
         60% { transform: translateY(-10px) scale(1.05); }
         100% { transform: translateY(0) scale(1); }
     }
-
-    #mascot.hide {
-        animation: mascot-slide-out 0.6s cubic-bezier(0.6, -0.28, 0.735, 0.045) forwards;
+    @keyframes mascot-bounce-out {
+        0% { transform: translateY(0) scale(1); }
+        100% { transform: translateY(200%) scale(0.5); }
     }
-    @keyframes mascot-slide-out {
-        from { transform: translateY(0) scale(1); opacity: 1; }
-        to { transform: translateY(200%) scale(0.5); opacity: 0; }
-    }
-    
     #mascot-message {
         position: absolute;
         bottom: 95%;
@@ -460,7 +393,6 @@
         transform: translateX(0) scale(1);
         opacity: 1;
     }
-
     .eye {
         transform-box: fill-box;
         transform-origin: center;
@@ -473,11 +405,9 @@
         0%, 90%, 100% { transform: scaleY(1); }
         95% { transform: scaleY(0.1); }
     }
-
     #gyan-right-arm {
       transform-origin: 80px 65px;
     }
-
     #toast {
         position: fixed;
         top: 20px;
@@ -497,7 +427,6 @@
     #toast.show {
         transform: translate(-50%, 0);
     }
-
     #top-score-highlight {
         margin: 24px auto 0;
         padding: 12px 20px;
@@ -516,7 +445,6 @@
         font-weight: 400;
         color: var(--text-secondary);
     }
-
     .scroll-indicator {
         position: absolute;
         bottom: 20px;
@@ -528,6 +456,10 @@
         transition: opacity 0.3s ease;
         pointer-events: none;
         z-index: 10;
+    }
+    html.modal-open .scroll-indicator {
+        opacity: 0;
+        pointer-events: none;
     }
     .scroll-indicator::before {
         content: '';
@@ -549,7 +481,6 @@
         40% { transform: translateY(-10px) rotate(45deg); }
         60% { transform: translateY(-5px) rotate(45deg); }
     }
-
     body.reduce-motion * { animation: none !important; transition-duration: 0.01s !important; }
   </style>
 </head>
@@ -618,15 +549,11 @@
         </div>
         <h2 id="dynamic-greeting"></h2>
         <h1>Himachal Quiz Challenge</h1>
-        <p style="max-width: 450px; margin: 16px auto 0;">Test your knowledge of Himachal Pradesh. Each session features a new set of questions with varying difficulty.</p>
+        <p style="max-width: 450px; margin: 16px auto 0;">Test your knowledge of Himachal Pradesh. Each session features a new set of 30 questions with varying difficulty.</p>
       </header>
       <div class="container-main">
         <div id="top-score-highlight"></div>
-        <div class="fact-feature">
-            <h3>✨ Fact of the Day</h3>
-            <p id="fact-text">Fetching a fun fact...</p>
-        </div>
-        <div id="leaderboard-area" class="leaderboard" style="margin-top: 16px;"></div>
+        <div id="leaderboard-area" class="leaderboard" style="margin-top: 24px;"></div>
       </div>
        <div class="scroll-indicator"></div>
       <footer class="container-footer">
@@ -703,49 +630,15 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-        const QUIZ_VERSION = '49.0';
-        const ADMIN_PASSWORD = 'admin123';
-        const TOTAL_QUESTIONS_PER_ROUND = 20;
+        const QUIZ_VERSION = '53.0';
+        const TOTAL_QUESTIONS_PER_ROUND = 30;
         
-        const FACTS_OF_THE_DAY = [
-            "Himachal Pradesh is often called the 'Land of the Gods' (Devbhumi).",
-            "The Great Himalayan National Park, a UNESCO site, is in Himachal.",
-            "Shimla has one of Asia's oldest natural ice-skating rinks.",
-            "The Kalka-Shimla Railway has over 103 tunnels.",
-            "Malana village is one of the oldest democracies in the world.",
-            "Himachal is the second least corrupt state in India.",
-            "The state animal is the elusive Snow Leopard.",
-            "Spiti Valley is a high-altitude cold desert.",
-            "Dharamshala is the home of the Dalai Lama.",
-            "Kangra tea from Himachal has a Geographical Indication (GI) tag.",
-            "The state bird is the beautiful Western Tragopan.",
-            "Himachal Pradesh was formed on 25th January 1971.",
-            "Nati is the most famous folk dance of the region.",
-            "The Atal Tunnel is the longest highway tunnel above 10,000 feet.",
-            "Chail Cricket Ground is the highest in the world.",
-            "The state flower of Himachal Pradesh is the Pink Rhododendron.",
-            "Kasol, in the Parvati Valley, is famously known as the 'Amsterdam of India'.",
-            "Himachal Pradesh has the highest road in the world, stretching from Manali to Leh.",
-            "The state is a major producer of hydroelectric power for Northern India.",
-            "Bir Billing is a world-renowned destination for paragliding, having hosted the Paragliding World Cup.",
-            "The historic Viceregal Lodge in Shimla is where the decision to partition India was planned.",
-            "Over 90% of Himachal's population lives in rural areas, making it one of the least urbanized states.",
-            "The local deity of Malana, Jamlu Devta, has his own unique parliamentary system.",
-            "Chandigarh was designed to be the joint capital for both Punjab and Haryana, while Shimla served as Himachal's capital.",
-            "The state is rich in medicinal herbs and is sometimes called the 'Herbal State'."
-        ];
-
         const BUILT_IN_SPECIAL_QUESTIONS = [
             { id: "S01", question: "This serene lake, surrounded by deodar forests, is often called the 'Mini Switzerland of India'. A small, floating island is a key feature. What is this location?", options: ["Prashar Lake", "Khajjiar Lake", "Dal Lake", "Rewalsar Lake"], answer: "Khajjiar Lake", isHard: true, topic: "Geography" },
             { id: "S02", question: "Located in the Spiti Valley, this ancient monastery is over a thousand years old and is a UNESCO World Heritage site. It's renowned for its stunning murals. Which monastery is this?", options: ["Key Monastery", "Dhankar Monastery", "Tabo Monastery", "Namgyal Monastery"], answer: "Tabo Monastery", isHard: true, topic: "History & Culture" },
             { id: "S03", question: "I am a famous hot spring located in the Parvati Valley, revered by both Hindus and Sikhs. A Gurudwara and a temple stand here. What place am I?", options: ["Tattapani", "Vashisht", "Manikaran", "Kheerganga"], answer: "Manikaran", isHard: true, topic: "Geography" },
             { id: "S04", question: "This engineering marvel, named after a former Prime Minister, drastically reduces travel time to Lahaul. It is the world's longest highway tunnel above 10,000 feet. What is it?", options: ["Jawahar Tunnel", "Dr. Syama Prasad Mookerjee Tunnel", "Atal Tunnel", "Rohtang Pass Tunnel"], answer: "Atal Tunnel", isHard: true, topic: "Modern Affairs" },
-            { id: "S05", question: "This former palace of the Maharaja of Patiala is now a luxury hotel. The world's highest cricket ground is also located here. Which town is it?", options: ["Kasauli", "Chail", "Dalhousie", "Naldehra"], answer: "Chail", isHard: true, topic: "History" },
-            { id: "S06", question: "I am a traditional form of embroidery from the Chamba district, known for its double-sided, intricate stitching. What am I?", options: ["Kangra Painting", "Kullu Shawl", "Thangka", "Chamba Rumal"], answer: "Chamba Rumal", isHard: true, topic: "Culture" },
-            { id: "S07", question: "This high-altitude, cold desert national park is located in Spiti and is home to the endangered snow leopard. What is its name?", options: ["Great Himalayan National Park", "Inderkilla National Park", "Pin Valley National Park", "Khirganga National Park"], answer: "Pin Valley National Park", isHard: true, topic: "Environment" },
-            { id: "S08", question: "I am a festive community feast where a variety of traditional dishes are served in a specific sequence on leaf plates. What am I?", options: ["Langar", "Sidu", "Dham", "Madra"], answer: "Dham", isHard: true, topic: "Culture" },
-            { id: "S09", question: "This famous international festival held in Kullu is unique because it begins when Dussehra festivities elsewhere end. What is it called?", options: ["Shimla Summer Festival", "Minjar Fair", "Kullu Dussehra", "Lavi Fair"], answer: "Kullu Dussehra", isHard: true, topic: "Culture" },
-            { id: "S10", question: "This town, the residence of the Dalai Lama, is a major center for the study of Buddhism and Tibetan culture. What is it?", options: ["Manali", "Dharamshala", "Palampur", "Rewalsar"], answer: "Dharamshala", isHard: true, topic: "Modern Affairs" }
+            { id: "S05", question: "This former palace of the Maharaja of Patiala is now a luxury hotel. The world's highest cricket ground is also located here. Which town is it?", options: ["Kasauli", "Chail", "Dalhousie", "Naldehra"], answer: "Chail", isHard: true, topic: "History" }
         ];
         
         const ALL_QUESTIONS = [
@@ -837,7 +730,6 @@
             resultsButtonsArea: document.getElementById('results-buttons-area'),
             modalOverlay: document.getElementById('modal-overlay'),
             modalContent: document.getElementById('modal-content'),
-            factText: document.getElementById('fact-text'),
             toast: document.getElementById('toast'),
             mascot: {
                 container: document.getElementById('mascot'),
@@ -856,44 +748,92 @@
         
         function setupSounds() {
             try {
-                sounds.click = new Tone.PluckSynth({attackNoise: 0.1, dampening: 4000, resonance: 0.7}).toDestination();
-                sounds.click.volume.value = -10;
+                const reverb = new Tone.Reverb(0.4).toDestination();
 
-                sounds.correct = new Tone.PolySynth(Tone.Synth, {
-                    oscillator: { type: "sine" },
-                    envelope: { attack: 0.005, decay: 0.2, sustain: 0.1, release: 0.2 }
+                sounds.click = new Tone.MembraneSynth({
+                    pitchDecay: 0.008,
+                    octaves: 2,
+                    envelope: { attack: 0.0006, decay: 0.05, sustain: 0 }
                 }).toDestination();
-                sounds.correct.volume.value = -12;
+                sounds.click.volume.value = -15;
+
+                sounds.close = new Tone.NoiseSynth({
+                    noise: { type: 'white' },
+                    envelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+                }).toDestination();
+                sounds.close.volume.value = -25;
+
+                sounds.correct = new Tone.FMSynth({
+                    harmonicity: 2,
+                    modulationIndex: 3,
+                    envelope: { attack: 0.001, decay: 0.2, sustain: 0, release: 0.2 },
+                    modulationEnvelope: { attack: 0.001, decay: 0.1, sustain: 0, release: 0.1 }
+                }).toDestination();
+                sounds.correct.volume.value = -15;
 
                 sounds.incorrect = new Tone.FMSynth({
-                     harmonicity: 1.2,
-                     modulationIndex: 5,
-                     envelope: { attack: 0.01, decay: 0.3, sustain: 0.01, release: 0.5 },
-                     modulationEnvelope: { attack: 0.01, decay: 0.2, sustain: 0, release: 0.2 }
+                    harmonicity: 1.5,
+                    modulationIndex: 10,
+                    envelope: { attack: 0.01, decay: 0.2, sustain: 0.01, release: 0.4 },
+                    modulationEnvelope: { attack: 0.01, decay: 0.15, sustain: 0, release: 0.2 }
                 }).toDestination();
-                sounds.incorrect.volume.value = -15;
+                sounds.incorrect.volume.value = -9;
+
+                sounds.start = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'triangle' },
+                    envelope: { attack: 0.005, decay: 0.1, sustain: 0.1, release: 0.2 }
+                }).connect(reverb);
+                sounds.start.volume.value = -18;
+
+                sounds.results = new Tone.Synth({
+                    oscillator: { type: 'amsine' },
+                    envelope: { attack: 0.2, decay: 0.5, sustain: 0.3, release: 0.8 }
+                }).connect(reverb);
+                sounds.results.volume.value = -15;
+
+                sounds.win = new Tone.PolySynth(Tone.FMSynth, {
+                    harmonicity: 1.5,
+                    envelope: { attack: 0.05, decay: 0.5, sustain: 0.5, release: 0.8 }
+                }).toDestination();
+                sounds.win.volume.value = -12;
+
             } catch (e) {
                 console.warn("Could not initialize audio context.", e);
             }
         }
 
-        function playSound(sound) {
-            if (state.settings.soundEnabled && sounds[sound] && Tone.context.state === 'running') {
-                 if(sound === 'click'){
-                    sounds.click.triggerAttack("G4", Tone.now());
-                } else if (sound === 'correct') {
-                    sounds.correct.triggerAttackRelease(["C5", "G5"], "16n", Tone.now());
-                }
-                else {
-                    sounds.incorrect.triggerAttackRelease("F#3", "8n");
-                }
+        async function playSound(sound) {
+            if (!state.settings.soundEnabled || !sounds[sound]) return;
+            if (Tone.context.state !== 'running') {
+                await Tone.start();
             }
-        }
-        
-        function fetchFactOfTheDay() {
-            const fact = FACTS_OF_THE_DAY[Math.floor(Math.random() * FACTS_OF_THE_DAY.length)];
-            if(elements.factText) {
-                elements.factText.textContent = fact;
+            
+            const now = Tone.now();
+            switch(sound) {
+                case 'click':
+                    sounds.click.triggerAttackRelease("C4", "8n", now);
+                    break;
+                case 'close':
+                    sounds.close.triggerAttackRelease("8n", now);
+                    break;
+                case 'correct':
+                    sounds.correct.triggerAttackRelease("C5", "8n", now);
+                    sounds.correct.triggerAttackRelease("G5", "8n", now + 0.1);
+                    break;
+                case 'incorrect':
+                    sounds.incorrect.triggerAttackRelease("G2", "8n", now);
+                    break;
+                case 'start':
+                    sounds.start.triggerAttackRelease("C4", "16n", now);
+                    sounds.start.triggerAttackRelease("E4", "16n", now + 0.1);
+                    sounds.start.triggerAttackRelease("G4", "16n", now + 0.2);
+                    break;
+                case 'results':
+                    sounds.results.triggerAttackRelease("G4", "2n", now);
+                    break;
+                case 'win':
+                    sounds.win.triggerAttackRelease(["C4", "E4", "G4", "C5"], "1n", now);
+                    break;
             }
         }
         
@@ -926,28 +866,39 @@
                 return;
             }
             
-            const topics = [...new Set(incorrectAnswers.map(item => item.topic || "General"))];
-            const listItems = topics.map(topic => `<li>${topic}</li>`).join('');
+            const topicCounts = incorrectAnswers.reduce((acc, ans) => {
+                const topic = ans.topic || 'General';
+                acc[topic] = (acc[topic] || 0) + 1;
+                return acc;
+            }, {});
 
-            const finalHTML = `<p>Great effort! Based on your answers, you might want to review the following topics:</p><ul>${listItems}</ul>`;
-            showModal(`<h2>✨ Review Summary</h2><div class="scrollable-content"><div class="study-guide">${finalHTML}</div></div>`);
+            const sortedTopics = Object.entries(topicCounts).sort(([, a], [, b]) => b - a);
+
+            let finalHTML = `<p>Great effort! Based on your performance, here's a smart summary:</p>`;
+            
+            if (sortedTopics.length > 0) {
+                const topWeakness = sortedTopics[0][0];
+                const topWeaknessCount = sortedTopics[0][1];
+
+                if (topWeaknessCount > 1 && (sortedTopics.length === 1 || topWeaknessCount > (sortedTopics[1]?.[1] || 0))) {
+                    finalHTML += `<p>Your main area for improvement seems to be <b>${topWeakness}</b>, where you had ${topWeaknessCount} incorrect answers. Focusing your study there could make a big difference!</p>`;
+                } else {
+                    finalHTML += `<p>Your incorrect answers were spread across a few topics. You might want to review:</p><ul>${sortedTopics.map(([topic, count]) => `<li><b>${topic}</b> (${count} mistake${count > 1 ? 's' : ''})</li>`).join('')}</ul>`;
+                }
+            }
+            
+            showModal(`<h2>✨ Smart Summary</h2><div class="scrollable-content"><div class="study-guide">${finalHTML}</div></div>`);
         }
+
 
         function setupScrollIndicators() {
             document.querySelectorAll('.scrollable-content').forEach(el => {
                 const indicator = el.parentElement.querySelector('.scroll-indicator');
                 if (indicator) {
                     indicator.classList.remove('scrolled');
-                    const handleScroll = () => {
-                        if (el.scrollTop > 10) {
-                           indicator.classList.add('scrolled');
-                        } else {
-                           indicator.classList.remove('scrolled');
-                        }
-                    };
-                    el.removeEventListener('scroll', handleScroll); // Remove previous listener
-                    el.addEventListener('scroll', handleScroll);
-                    handleScroll(); // Initial check
+                    el.addEventListener('scroll', () => {
+                        indicator.classList.add('scrolled');
+                    }, { once: true });
                 }
             });
         }
@@ -1026,7 +977,6 @@
             elements.mascot.container.classList.remove('hide');
             elements.mascot.container.style.animation = 'none';
             void elements.mascot.container.offsetWidth;
-            elements.mascot.container.style.animation = '';
             
             elements.mascot.container.classList.add('show');
             
@@ -1041,9 +991,13 @@
             mascotTimeout = setTimeout(() => {
                 elements.mascot.container.classList.remove('show-message');
                 elements.mascot.container.classList.add('hide');
-                setTimeout(() => {
+                
+                const handleAnimationEnd = () => {
                     elements.mascot.container.classList.remove('show', 'hide');
-                }, 600);
+                    elements.mascot.container.removeEventListener('animationend', handleAnimationEnd);
+                };
+                elements.mascot.container.addEventListener('animationend', handleAnimationEnd);
+
             }, 3000);
         }
 
@@ -1053,7 +1007,7 @@
             elements.mascot.container.classList.remove('hide');
             elements.mascot.container.style.animation = '';
             const timeString = new Date().toLocaleTimeString('en-IN', { hour: 'numeric', minute: '2-digit', hour12: true });
-            elements.mascot.message.textContent = `${timeString} - ${greeting}`;
+            elements.mascot.message.textContent = `${timeString} - ${greeting}` || "Ready for a challenge?";
             elements.mascot.mouth.setAttribute('d', 'M48 35 C 49 36, 51 36, 52 35');
             elements.mascot.container.classList.add('show');
             setTimeout(() => {
@@ -1062,18 +1016,13 @@
 
             mascotTimeout = setTimeout(() => {
                 elements.mascot.container.classList.remove('show-message');
-                elements.mascot.container.classList.add('hide');
-                setTimeout(() => {
-                    elements.mascot.container.classList.remove('show', 'hide');
-                }, 600);
             }, 5000);
         }
         
         function getRoundTitle(index) {
-            if (index < 10) return "Round 1 & 2";
-            if (index < 15) return "Hard Round 1";
-            if (index < 25) return "Round 3 & 4";
-            return "Hard Round 2";
+            if (index < 10) return "Round 1";
+            if (index < 20) return "Round 2";
+            return "Hard Round";
         }
         
         function updateHeroImage(timeOfDay) {
@@ -1087,29 +1036,29 @@
             stars.style.opacity = '0';
 
             switch(timeOfDay) {
-                case 'morning': // 5am - 12pm: Sunrise
-                    skyStop1.setAttribute('stop-color', '#4A6E8A'); // Dusky Blue
-                    skyStop2.setAttribute('stop-color', '#FFC371'); // Light Orange
-                    sunMoon.setAttribute('cy', '45');
-                    sunMoon.setAttribute('fill', '#FFD700'); // Gold sun
+                case 'morning': // 5am - 12pm
+                    skyStop1.setAttribute('stop-color', '#87CEEB');
+                    skyStop2.setAttribute('stop-color', '#f0e68c');
+                    sunMoon.setAttribute('cy', '35');
+                    sunMoon.setAttribute('fill', '#FFD700');
                     break;
-                case 'afternoon': // 12pm - 5pm: Midday
-                    skyStop1.setAttribute('stop-color', '#3498db'); // Bright Blue
-                    skyStop2.setAttribute('stop-color', '#87CEEB'); // Sky Blue
+                case 'afternoon': // 12pm - 5pm
+                    skyStop1.setAttribute('stop-color', '#007aff');
+                    skyStop2.setAttribute('stop-color', '#87CEEB');
                     sunMoon.setAttribute('cy', '20');
-                    sunMoon.setAttribute('fill', '#FFFF00'); // Yellow sun
+                    sunMoon.setAttribute('fill', '#FFFF00');
                     break;
-                case 'evening': // 5pm - 8pm: Sunset
-                    skyStop1.setAttribute('stop-color', '#2c1e3e'); // Dark Purple
-                    skyStop2.setAttribute('stop-color', '#d96459'); // Terracotta Red
+                case 'evening': // 5pm - 8pm
+                    skyStop1.setAttribute('stop-color', '#483D8B');
+                    skyStop2.setAttribute('stop-color', '#FF6347');
                     sunMoon.setAttribute('cy', '40');
-                    sunMoon.setAttribute('fill', '#f39c12'); // Orange sun
+                    sunMoon.setAttribute('fill', '#FFA500');
                     break;
-                case 'night': // 8pm - 5am: Night
-                    skyStop1.setAttribute('stop-color', '#0d1b2a'); // Very Dark Blue
-                    skyStop2.setAttribute('stop-color', '#1b263b'); // Dark Blue Grey
+                case 'night': // 8pm - 5am
+                    skyStop1.setAttribute('stop-color', '#000033');
+                    skyStop2.setAttribute('stop-color', '#1c1d23');
                     sunMoon.setAttribute('cy', '25');
-                    sunMoon.setAttribute('fill', '#F5F5F7'); // White (Moon)
+                    sunMoon.setAttribute('fill', '#F5F5F7');
                     stars.style.opacity = '1';
                     break;
             }
@@ -1185,17 +1134,23 @@
         }
 
         async function startGame() {
+            playSound('start');
             clearTimeout(mascotTimeout);
             elements.mascot.container.classList.remove('show', 'hide');
             
             initializeState();
             prepareQuestions();
             applySettings();
+            
+            elements.question.textContent = 'Loading question...';
+            elements.options.innerHTML = '';
+            elements.feedbackArea.innerHTML = '';
+            elements.nextBtn.style.display = 'none';
+
             switchScreen('quiz');
             
-            const startMessages = ["Let's do this!", "Good luck!", "Here we go!", "The challenge begins!"];
-            showMascot(true, startMessages[Math.floor(Math.random() * startMessages.length)]);
-            await new Promise(res => setTimeout(res, 2000));
+            showMascot(true, "Good luck!");
+            await new Promise(res => setTimeout(res, 1500));
             loadNextQuestion();
         }
 
@@ -1206,7 +1161,6 @@
             displayLeaderboard(elements.leaderboardArea, true);
             const greeting = setDynamicGreeting();
             showWelcomeMascot(greeting);
-            fetchFactOfTheDay();
             setupScrollIndicators();
         }
 
@@ -1234,13 +1188,15 @@
         }
         
         function loadNextQuestion() {
-            const roundBoundaries = { 9: 10, 14: 5, 24: 10, 29: 5 }; 
-            if (roundBoundaries[state.questionIndex] && state.mistakesThisRound === 0 && state.questionIndex !== -1) {
-                state.score += 50;
-                showToast("🏆 Perfect Round! +50 Points", "perfect");
-            }
-            if (roundBoundaries[state.questionIndex]) {
-                state.mistakesThisRound = 0; 
+            if (state.questionIndex >= 0) {
+                 const roundBoundaries = { 9: true, 19: true }; 
+                 if (roundBoundaries[state.questionIndex] && state.mistakesThisRound === 0) {
+                    state.score += 50;
+                    showToast("🏆 Perfect Round! +50 Points", "perfect");
+                 }
+                 if(roundBoundaries[state.questionIndex]) {
+                    state.mistakesThisRound = 0; 
+                 }
             }
 
             elements.nextBtn.style.display = 'none';
@@ -1312,6 +1268,13 @@
 
         function checkAnswer(selectedOption, q, timedOut = false) {
             clearTimeout(state.questionTimer);
+
+            const timerBar = elements.timerBar;
+            if (timerBar) {
+                const computedWidth = getComputedStyle(timerBar).width;
+                timerBar.style.transition = 'none';
+                timerBar.style.width = computedWidth;
+            }
             
             const isCorrect = selectedOption === q.answer;
             showMascot(isCorrect);
@@ -1375,6 +1338,7 @@
         }
 
         function showResults() {
+            playSound('results');
             updateSeenQuestions();
             switchScreen('results');
             
@@ -1384,10 +1348,25 @@
             const percentage = (state.correctAnswers / TOTAL_QUESTIONS_PER_ROUND) * 100;
             let badge, medalIcon, badgeClass;
             
-            if (percentage >= 90) { badge = "Gold Medalist"; medalIcon = "🥇"; badgeClass = "gold"; if(!state.settings.reduceMotion && typeof confetti === 'function') setTimeout(() => confetti({ particleCount: 150, spread: 90, zIndex: 2001 }), 500); }
-            else if (percentage >= 75) { badge = "Silver Medalist"; medalIcon = "🥈"; badgeClass = "silver"; }
-            else if (percentage >= 60) { badge = "Bronze Medalist"; medalIcon = "🥉"; badgeClass = "bronze"; }
-            else { badge = "Great Effort! Try Again!"; medalIcon = "🙂"; badgeClass = ""; }
+            if (percentage >= 90) { 
+                badge = "Gold Medalist"; 
+                medalIcon = "🥇"; 
+                badgeClass = "gold"; 
+                playSound('win');
+                if(!state.settings.reduceMotion && typeof confetti === 'function') setTimeout(() => confetti({ particleCount: 150, spread: 90, zIndex: 2001 }), 500); 
+            } else if (percentage >= 75) { 
+                badge = "Silver Medalist"; 
+                medalIcon = "🥈"; 
+                badgeClass = "silver"; 
+            } else if (percentage >= 60) { 
+                badge = "Bronze Medalist"; 
+                medalIcon = "🥉"; 
+                badgeClass = "bronze"; 
+            } else { 
+                badge = "Great Effort!"; 
+                medalIcon = "🙂"; 
+                badgeClass = ""; 
+            }
             
             elements.medalDisplay.textContent = medalIcon;
             elements.finalBadge.textContent = badge;
@@ -1450,17 +1429,23 @@
             elements.modalOverlay.classList.add('show');
             
             const closeModal = (silent = false) => {
+                if (!silent) playSound('close');
                 elements.docElement.classList.remove('modal-open');
                 elements.modalOverlay.classList.remove('show'); 
                 document.removeEventListener('keydown', keydownHandler);
                 activeModalClose = null;
             };
             
-            const keydownHandler = (e) => { if (e.key === 'Escape') closeModal(); };
+            const keydownHandler = (e) => { 
+                if (e.key === 'Escape') {
+                    closeModal(); 
+                }
+            };
             activeModalClose = closeModal;
             document.addEventListener('keydown', keydownHandler);
-            elements.modalContent.querySelector('.modal-close-btn').onclick = () => { playSound('click'); closeModal(); };
-            setupScrollIndicators();
+            elements.modalContent.querySelector('.modal-close-btn').onclick = () => { 
+                closeModal(); 
+            };
         }
         
         function showAlert(messageHTML) {
@@ -1492,8 +1477,8 @@
             getEl('sound-toggle').onchange = (e) => { state.settings.soundEnabled = e.target.checked; saveSettings(); playSound('click'); };
             getEl('large-text-toggle').onchange = (e) => { state.settings.largeText = e.target.checked; applySettings(); saveSettings(); playSound('click'); };
             getEl('reduce-motion-toggle').onchange = (e) => { state.settings.reduceMotion = e.target.checked; applySettings(); saveSettings(); playSound('click'); };
-            getEl('manage-leaderboard-btn').onclick = () => { playSound('click'); handleManageLeaderboard(); };
-            getEl('master-reset-btn').onclick = () => { playSound('click'); handleMasterReset(); };
+            getEl('manage-leaderboard-btn').onclick = handleManageLeaderboard;
+            getEl('master-reset-btn').onclick = handleMasterReset;
         }
 
         function showThemeMenu() {
@@ -1547,6 +1532,7 @@
             });
             reviewHTML += '</div></div><div class="scroll-indicator"></div>';
             showModal(reviewHTML);
+            setupScrollIndicators();
         }
 
         function showAboutModal() {
@@ -1570,32 +1556,28 @@
         
         function showProjectBackstoryModal() {
             const backstoryHTML = `
-                <h2>The Project Backstory</h2>
-                <div class="scrollable-content" style="text-align: left; font-size: 0.95rem; line-height: 1.7;">
-                    <div class="study-guide">
-                        <p>Hey there, I'm Saksham Negi. Thanks for being curious about how this quiz was built. This project was a personal challenge, and I'd love to share the story with you.</p>
-                        
-                        <h4>The Spark: The 72-Hour Challenge 💡</h4>
-                        <p>It all started as a self-imposed 72-hour coding challenge. The goal was to build a complete, polished web application from scratch. I chose a quiz about my home state, Himachal Pradesh, because I wanted to create something fun and educational.</p>
+                <h2>My 72-Hour Challenge</h2>
+                <div class="scrollable-content"><div class="study-guide">
+                    <h4>The Spark 💡</h4>
+                    <p>Hey, I'm Saksham Negi. This whole project started as a crazy idea for my final Computer Club submission: build a complete, professional-looking web app from scratch in just 72 hours. The goal was to create an engaging quiz that was fast, beautiful, and worked perfectly on any device, especially mobile.</p>
+                    
+                    <h4>The "No-Framework" Philosophy 💻</h4>
+                    <p>You might be wondering, "Why no React or Vue?" I intentionally chose to build this with pure, vanilla <b>HTML, CSS, and JavaScript (ES6+)</b>. It was a personal challenge to prove that you don't always need a heavy framework for a snappy, modern UI. The entire app is a single HTML file! This makes it incredibly fast to load and super portable.</p>
+                    <p>For the styling, I relied heavily on CSS Custom Properties (variables) which makes the theme-switching (light/dark/auto) logic just a one-line attribute change on the \`<html>\` tag. All the animations are CSS-based for performance, and the cool "glass" effect on the container is done with \`backdrop-filter\`. </p>
 
-                        <h4>Why Vanilla JS? No Frameworks? 💻</h4>
-                        <p>As a developer, I believe it's crucial to have a strong foundation. I deliberately avoided frameworks like React or Angular to prove that you can build a fast, modern, and interactive UI with just plain old HTML, CSS, and JavaScript. This approach forced me to work directly with the DOM, manage the application state manually, and deeply understand browser performance. The result is a lightweight, single-file application that's incredibly fast and easy to deploy on platforms like Vercel.</p>
+                    <h4>The 72-Hour Grind 🚀</h4>
+                    <p>So, how was it possible in 3 days? A whole lot of planning and coffee ☕.</p>
+                    <p><b>Day 1: Foundation & Logic.</b> The first 24 hours were all about the JavaScript core. I built the main state management object (\`state\`), which holds everything from the current question index to user settings. Then I wrote the main game loop: \`startGame()\`, \`loadNextQuestion()\`, and \`checkAnswer()\`. No UI, just pure logic running in the console to make sure it was solid.</p>
+                    <p><b>Day 2: Making It Pretty.</b> This was all about CSS. I spent the day designing the aurora background (it's just two animated radial gradients!), the glowing borders on the container, the button styles, and making sure the layout was fully responsive using flexible units and clamps.</p>
+                    <p><b>Day 3: Content & Polish.</b> Let's be real, writing over 60 questions and facts is a massive task. This is where I used Gemini smartly. I used it as a research assistant to bootstrap the content. For example, I'd prompt for "10 hard questions about Himachal's history" to get ideas. But I didn't just copy-paste. I treated it like a junior dev's first draft—I fact-checked every single item, rewrote questions to fit the quiz's tone, and added all the detailed explanations myself. It probably saved me 8-10 hours of manual Google searches. The rest of the day was for polishing touches: adding sounds with \`Tone.js\`, the confetti, the little robot mascot, and hunting down every last bug I could find.</p>
 
-                        <h4>The Design and UI ✨</h4>
-                        <p>The aesthetic was a big focus. I spent the first day crafting the UI, drawing inspiration from glassmorphism. The frosted glass container, glowing borders, and the aurora background (made with animated CSS radial gradients) were all created from scratch. The little robot mascot was an SVG I designed to give the app some personality.</p>
-                        
-                        <h4>How I Used Gemini (Sparingly) 🤖</h4>
-                        <p>With the 72-hour clock ticking, building a quality question bank was the biggest hurdle. This is where I used Google's Gemini as a research assistant, not a content generator. I prompted it for specific, verifiable facts on niche topics, like "Key features of Kath-Kuni architecture" or "list of Viceroys who resided in Shimla." Gemini provided the raw data, but I personally fact-checked every single point and then handcrafted each question, its incorrect options, and the detailed "Did you know?" sections. This ensured the content was accurate and engaging.</p>
-
-                        <h4>Technical Hurdles and Wins 🏆</h4>
-                        <p>Managing the quiz state (current question, score, streak) in vanilla JS was a fun puzzle. I settled on a single global 'state' object, which kept everything predictable. The "smart" question selection that mixes new and old questions uses \`localStorage\` to remember what you've seen, adding replay value. The biggest technical win was creating a smooth, bug-free experience without the safety net of a framework.</p>
-
-                        <p style="margin-top: 24px; font-size: 0.9rem; color: var(--text-secondary); text-align: center;">Copyright © 2025 Saksham Negi. All Rights Reserved.</p>
-                    </div>
-                </div>
-                <div class="scroll-indicator"></div>
+                    <h4>Cool Little Details ✨</h4>
+                    <p>A couple of things for fellow coders: the "smart" question selection uses \`localStorage\` to remember questions you've seen, ensuring you get fresh content (about 80% new questions) each time you play. Also, the entire app state is managed in a single JS object. It's simple, but for an app this size, it's way more efficient than pulling in a big state management library. It was a wild 72 hours, but I'm super proud of how this little project turned out!</p>
+                </div></div>
+                 <div class="scroll-indicator"></div>
             `;
             showModal(backstoryHTML);
+            setupScrollIndicators();
         }
 
         function displayLeaderboard(target, showTopScore) {
@@ -1653,21 +1635,6 @@
             }
         }
         
-        function promptForAdminPassword() {
-            return new Promise(resolve => {
-                showModal(`<h2>Admin Access</h2><div class="scrollable-content"><p>Please enter the password.</p><input type="password" id="admin-password-input" class="modal-input" autocomplete="current-password"><div id="modal-validation-message"></div><div class="modal-buttons"><button id="admin-submit-btn" class="main-btn">Submit</button></div></div>`);
-                const input = document.getElementById('admin-password-input');
-                input.focus();
-                const handleSubmit = () => {
-                    playSound('click');
-                    if (input.value === ADMIN_PASSWORD) { if (activeModalClose) activeModalClose(true); resolve(true); } 
-                    else { document.getElementById('modal-validation-message').textContent = 'Incorrect Password.'; input.value = ''; input.focus(); }
-                };
-                input.onkeydown = e => { if (e.key === 'Enter') handleSubmit(); };
-                document.getElementById('admin-submit-btn').onclick = handleSubmit;
-            });
-        }
-        
         function showConfirmation(message) {
           return new Promise(resolve => {
               showModal(`<h2>Are you sure?</h2><div class="scrollable-content"><p>${message}</p><div class="modal-buttons"><button id="confirm-yes-btn" class="danger-btn">Yes, I'm sure</button><button id="confirm-no-btn" class="secondary-btn">Cancel</button></div></div>`);
@@ -1676,7 +1643,12 @@
           });
         }
 
-        async function handleManageLeaderboard() { if (await promptForAdminPassword()) renderLeaderboardManager(); }
+        async function handleManageLeaderboard() {
+            playSound('click');
+            if (await showConfirmation("You are entering the admin area to manage the leaderboard. Are you sure?")) {
+                renderLeaderboardManager();
+            }
+        }
         
         function renderLeaderboardManager() {
             let leaderboard = [];
@@ -1738,7 +1710,7 @@
         }
 
         async function handleMasterReset() {
-            if (!await promptForAdminPassword()) return;
+            playSound('click');
             if (await showConfirmation("This will delete the ENTIRE leaderboard and ALL settings. This action cannot be undone.")) {
                 try {
                     localStorage.removeItem('himachalQuizLeaderboard');
@@ -1746,7 +1718,9 @@
                     localStorage.removeItem('seenQuestions');
                     await showAlert(`<h2>Reset Complete</h2><p>All quiz data has been deleted. The application will now reload.</p>`);
                     setTimeout(() => window.location.reload(), 2000);
-                } catch(e) { await showAlert(`<h2>Error</h2><p>An error occurred while clearing data.</p>`); }
+                } catch(e) { 
+                    await showAlert(`<h2>Error</h2><p>An error occurred while clearing data.</p>`); 
+                }
             }
         }
         
@@ -1767,15 +1741,13 @@
             elements.powerup5050Btn.addEventListener('click', () => { playClick(); useFiftyFifty(); });
         }
         
-        function initAudioOnFirstInteraction() {
+        async function initAudioOnFirstInteraction() {
             if (Tone.context.state !== 'running') {
-                Tone.context.resume();
+                await Tone.start();
             }
-            document.body.removeEventListener('click', initAudioOnFirstInteraction);
-            document.body.removeEventListener('touchend', initAudioOnFirstInteraction);
         }
-        document.body.addEventListener('click', initAudioOnFirstInteraction);
-        document.body.addEventListener('touchend', initAudioOnFirstInteraction);
+        document.body.addEventListener('click', initAudioOnFirstInteraction, { once: true });
+        document.body.addEventListener('touchend', initAudioOnFirstInteraction, { once: true });
 
         goHome();
         setupSounds();
@@ -1784,3 +1756,4 @@
   </script>
 </body>
 </html>
+
